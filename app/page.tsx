@@ -14,6 +14,7 @@ import { GiftFinder } from "@/components/home/GiftFinder";
 import { Hero } from "@/components/home/Hero";
 import { ReadySet } from "@/components/home/ReadySet";
 import { categories, getProductsByIds, products } from "@/data/products";
+import { assetPath } from "@/lib/assets";
 import { formatPrice } from "@/lib/format";
 
 const categoryIcons = {
@@ -43,7 +44,7 @@ export default function Home() {
           <div className="shell drop-promo-grid">
             <article className="drop-feature">
               <Link className="drop-feature-image" href={`/product/${weeklyFeature.slug}`}>
-                <Image src={weeklyFeature.image} alt={`${weeklyFeature.name} 제품 이미지`} fill sizes="(max-width: 767px) 100vw, 58vw" style={{ objectFit: "cover", objectPosition: weeklyFeature.imagePosition }} />
+                <Image src={assetPath(weeklyFeature.image)} alt={`${weeklyFeature.name} 제품 이미지`} fill sizes="(max-width: 767px) 100vw, 58vw" style={{ objectFit: "cover", objectPosition: weeklyFeature.imagePosition }} />
               </Link>
               <div className="drop-feature-info">
                 <span>{weeklyFeature.brand}</span>
@@ -57,7 +58,7 @@ export default function Home() {
               {weeklySide.map((item) => (
                 <article key={item.id}>
                   <Link className="drop-side-image" href={`/product/${item.slug}`}>
-                    <Image src={item.image} alt={`${item.name} 제품 이미지`} fill sizes="(max-width: 767px) 36vw, 18vw" style={{ objectFit: "cover", objectPosition: item.imagePosition }} />
+                    <Image src={assetPath(item.image)} alt={`${item.name} 제품 이미지`} fill sizes="(max-width: 767px) 36vw, 18vw" style={{ objectFit: "cover", objectPosition: item.imagePosition }} />
                   </Link>
                   <div>
                     <span>{item.brand}</span>

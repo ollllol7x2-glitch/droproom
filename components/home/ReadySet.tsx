@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useStore } from "@/components/commerce/StoreProvider";
 import { getProductsByIds } from "@/data/products";
+import { assetPath } from "@/lib/assets";
 import { formatPrice } from "@/lib/format";
 
 const setItems = getProductsByIds(["p02", "p03", "p14"]);
@@ -43,7 +44,7 @@ export function ReadySet() {
           {setItems.map((item) => (
             <Link href={`/product/${item.slug}`} key={item.id} aria-label={`${item.name} 상세 보기`}>
               <span className="ready-set-image">
-                <Image src={item.image} alt={`${item.name} 제품 이미지`} fill sizes="(max-width: 767px) 78vw, (max-width: 1024px) 31vw, 24vw" style={{ objectFit: "cover", objectPosition: item.imagePosition }} />
+                <Image src={assetPath(item.image)} alt={`${item.name} 제품 이미지`} fill sizes="(max-width: 767px) 78vw, (max-width: 1024px) 31vw, 24vw" style={{ objectFit: "cover", objectPosition: item.imagePosition }} />
               </span>
               <span className="ready-set-item-info">
                 <small>{item.brand}</small>

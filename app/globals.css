@@ -1,13 +1,5 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Pretendard";
-  src: url("/fonts/PretendardVariable.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
   --bg: #ffffff;
   --surface: #f0ecf3;
@@ -52,7 +44,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: "Pretendard", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-pretendard), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -3107,21 +3099,21 @@ img {
 .brand-logo--header {
   width: clamp(142px, 13vw, 178px);
   aspect-ratio: 514.69 / 59.5675;
-  -webkit-mask-image: url("/brand/drop-room-header.svg");
-  mask-image: url("/brand/drop-room-header.svg");
+  -webkit-mask-image: var(--brand-header-image);
+  mask-image: var(--brand-header-image);
 }
 
 .brand-logo--lockup {
   width: 100%;
   aspect-ratio: 344.2438 / 133.6975;
-  -webkit-mask-image: url("/brand/drop-room-lockup.svg");
-  mask-image: url("/brand/drop-room-lockup.svg");
+  -webkit-mask-image: var(--brand-lockup-image);
+  mask-image: var(--brand-lockup-image);
 }
 
 .brand-logo--symbol {
   aspect-ratio: 73.5424 / 84.9281;
-  -webkit-mask-image: url("/brand/drop-room-symbol.svg");
-  mask-image: url("/brand/drop-room-symbol.svg");
+  -webkit-mask-image: var(--brand-symbol-image);
+  mask-image: var(--brand-symbol-image);
 }
 
 .brand-home-link {
@@ -3187,7 +3179,7 @@ img {
 .hero-poster {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(90deg, var(--bg) 4%, transparent 55%), url("/images/drop-room-v2/hero-dream-room.webp");
+  background-image: linear-gradient(90deg, var(--bg) 4%, transparent 55%), var(--hero-poster-image);
   background-position: center, 82% center;
   background-size: cover, cover;
   opacity: 0.055;
@@ -3231,7 +3223,7 @@ img {
 }
 
 .hero-canvas-fallback {
-  background: url("/images/drop-room-v2/hero-dream-room.webp") center / cover no-repeat;
+  background: var(--hero-poster-image) center / cover no-repeat;
   mask-image: linear-gradient(90deg, transparent 0%, #000 24%);
 }
 

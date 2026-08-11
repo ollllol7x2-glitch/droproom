@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useStore } from "@/components/commerce/StoreProvider";
 import { getProductsByIds } from "@/data/products";
+import { assetPath } from "@/lib/assets";
 import { formatPrice } from "@/lib/format";
 
 export function CartClient() {
@@ -23,7 +24,7 @@ export function CartClient() {
         <div className="cart-lines">
           {lines.map(({ product, quantity }) => (
             <article className="cart-line" key={product.id}>
-              <Link className="cart-thumb" href={`/product/${product.slug}`}><Image src={product.image} alt="" fill sizes="160px" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></Link>
+              <Link className="cart-thumb" href={`/product/${product.slug}`}><Image src={assetPath(product.image)} alt="" fill sizes="160px" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></Link>
               <div className="cart-line-info"><span>{product.brand}</span><Link href={`/product/${product.slug}`}><h2>{product.name}</h2></Link><strong>{formatPrice(product.salePrice ?? product.price)}</strong></div>
               <div className="cart-quantity"><button type="button" aria-label="수량 줄이기" onClick={() => updateQuantity(product.id, quantity - 1)}><Minus size={14} /></button><output>{quantity}</output><button type="button" aria-label="수량 늘리기" onClick={() => updateQuantity(product.id, quantity + 1)}><Plus size={14} /></button></div>
               <strong className="cart-line-total">{formatPrice((product.salePrice ?? product.price) * quantity)}</strong>
