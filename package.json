@@ -1,0 +1,30 @@
+{
+  "name": "drop-room",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build --webpack",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@phosphor-icons/react": "latest",
+    "@react-three/drei": "latest",
+    "@react-three/fiber": "latest",
+    "next": "latest",
+    "next-auth": "5.0.0-beta.32",
+    "react": "latest",
+    "react-dom": "latest",
+    "three": "latest"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@types/three": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest"
+  }
+}
