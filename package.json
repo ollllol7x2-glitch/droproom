@@ -13,6 +13,7 @@
     "@phosphor-icons/react": "latest",
     "@react-three/drei": "latest",
     "@react-three/fiber": "latest",
+    "@supabase/supabase-js": "2.112.3",
     "next": "latest",
     "next-auth": "5.0.0-beta.32",
     "react": "latest",
