@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import { PagesAdminGate } from "@/components/auth/PagesAdminGate";
 
 export const metadata: Metadata = {
   title: "관리자 데모",
@@ -7,12 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function AdminPage() {
-  return (
-    <AdminDashboard
-      currentUser={{
-        name: "데모 운영자",
-        email: "GitHub Pages 미리보기",
-      }}
-    />
-  );
+  return <PagesAdminGate />;
 }
