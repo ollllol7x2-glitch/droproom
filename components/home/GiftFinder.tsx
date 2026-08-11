@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { products } from "@/data/products";
+import { assetPath } from "@/lib/assets";
 import { formatPrice } from "@/lib/format";
 
 const recipients = ["친구", "연인", "나"];
@@ -88,7 +89,7 @@ export function GiftFinder() {
         {pick && (
           <div className="gift-pick" aria-live="polite" key={pick.id}>
             <Link className="gift-pick-image" href={`/product/${pick.slug}`}>
-              <Image src={pick.image} alt={`${pick.name} 제품 이미지`} fill sizes="(max-width: 767px) 100vw, 42vw" style={{ objectFit: "cover", objectPosition: pick.imagePosition }} />
+              <Image src={assetPath(pick.image)} alt={`${pick.name} 제품 이미지`} fill sizes="(max-width: 767px) 100vw, 42vw" style={{ objectFit: "cover", objectPosition: pick.imagePosition }} />
             </Link>
             <div className="gift-pick-info">
               <span>{recipient}에게 추천</span>

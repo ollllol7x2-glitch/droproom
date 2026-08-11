@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/components/commerce/StoreProvider";
 import type { Product } from "@/data/products";
+import { assetPath } from "@/lib/assets";
 import { formatPrice } from "@/lib/format";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -31,7 +32,7 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="product-media">
         <Link href={`/product/${product.slug}`} aria-label={`${product.name} 상세 보기`}>
           <Image
-            src={product.image}
+            src={assetPath(product.image)}
             alt={`${product.name} 제품 이미지`}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

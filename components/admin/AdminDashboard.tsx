@@ -27,6 +27,7 @@ import { useMemo, useState } from "react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { adminCustomers, adminOrders, weeklySales } from "@/data/admin";
 import { products } from "@/data/products";
+import { assetPath } from "@/lib/assets";
 
 type AdminView = "dashboard" | "orders" | "products" | "inventory" | "customers";
 
@@ -233,14 +234,14 @@ function ProductsView({ productsToShow }: { productsToShow: typeof products }) {
   return (
     <section className="admin-panel admin-table-panel">
       <div className="admin-panel-head"><div><h2>판매 상품</h2><p>{productsToShow.length}개 상품</p></div><button type="button">카테고리 <CaretDown size={15} /></button></div>
-      <div className="admin-table-wrap"><table className="admin-table admin-product-table"><thead><tr><th>상품</th><th>카테고리</th><th>판매가</th><th>재고 상태</th><th>노출</th></tr></thead><tbody>{productsToShow.map((product) => <tr key={product.id}><td><div className="admin-product-cell"><span><Image src={product.image} alt="" fill sizes="54px" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></span><div><strong>{product.name}</strong><small>{product.brand}</small></div></div></td><td>{product.category.toUpperCase()}</td><td>{formatPrice(product.salePrice ?? product.price)}</td><td><StockStatus status={product.stockStatus} /></td><td><span className="admin-visibility">판매중</span></td></tr>)}</tbody></table></div>
+      <div className="admin-table-wrap"><table className="admin-table admin-product-table"><thead><tr><th>상품</th><th>카테고리</th><th>판매가</th><th>재고 상태</th><th>노출</th></tr></thead><tbody>{productsToShow.map((product) => <tr key={product.id}><td><div className="admin-product-cell"><span><Image src={assetPath(product.image)} alt="" fill sizes="54px" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></span><div><strong>{product.name}</strong><small>{product.brand}</small></div></div></td><td>{product.category.toUpperCase()}</td><td>{formatPrice(product.salePrice ?? product.price)}</td><td><StockStatus status={product.stockStatus} /></td><td><span className="admin-visibility">판매중</span></td></tr>)}</tbody></table></div>
     </section>
   );
 }
 
 function InventoryView({ productsToShow }: { productsToShow: typeof products }) {
   const inventory = productsToShow.filter((product) => product.stockStatus !== "in_stock");
-  return <section className="admin-inventory-grid">{inventory.map((product, index) => <article className="admin-inventory-card" key={product.id}><div className="admin-inventory-image"><Image src={product.image} alt="" fill sizes="96px" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></div><div><StockStatus status={product.stockStatus} /><h2>{product.name}</h2><p>{product.brand}</p><strong>{product.stockStatus === "sold_out" ? "재고 0개" : `재고 ${index + 3}개`}</strong></div><button type="button">입고 수량 등록</button></article>)}</section>;
+  return <section className="admin-inventory-grid">{inventory.map((product, index) => <article className="admin-inventory-card" key={product.id}><div className="admin-inventory-image"><Image src={assetPath(product.image)} alt="" fill sizes="96px" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></div><div><StockStatus status={product.stockStatus} /><h2>{product.name}</h2><p>{product.brand}</p><strong>{product.stockStatus === "sold_out" ? "재고 0개" : `재고 ${index + 3}개`}</strong></div><button type="button">입고 수량 등록</button></article>)}</section>;
 }
 
 function StockStatus({ status }: { status: (typeof products)[number]["stockStatus"] }) {

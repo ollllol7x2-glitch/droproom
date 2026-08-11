@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { getProductsByIds } from "@/data/products";
+import { assetPath } from "@/lib/assets";
 import { formatPrice } from "@/lib/format";
 
 const heroProducts = getProductsByIds(["p16", "p07", "p11", "p05"]);
@@ -79,7 +80,7 @@ export function Hero() {
               </div>
               <Link className="product-hero-media" href={`/product/${product.slug}`} aria-label={`${product.name} 상세 보기`}>
                 <Image
-                  src={product.image}
+                  src={assetPath(product.image)}
                   alt={`${product.name} 제품 이미지`}
                   fill
                   priority={index === 0}

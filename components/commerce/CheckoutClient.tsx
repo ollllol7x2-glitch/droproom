@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
 import { useStore } from "@/components/commerce/StoreProvider";
 import { getProductsByIds } from "@/data/products";
+import { assetPath } from "@/lib/assets";
 import { formatPrice } from "@/lib/format";
 
 export function CheckoutClient() {
@@ -34,7 +35,7 @@ export function CheckoutClient() {
           <section><h2>배송지</h2><div className="form-grid"><label className="full"><span>주소</span><input name="address" required autoComplete="street-address" /></label><label className="full"><span>상세 주소</span><input name="address-detail" required /></label><label className="full"><span>배송 메모</span><select name="memo" defaultValue="문 앞에 놓아주세요"><option>문 앞에 놓아주세요</option><option>배송 전 연락해주세요</option><option>직접 입력</option></select></label></div></section>
           <section><h2>결제 수단</h2><div className="payment-options"><label><input type="radio" name="payment" defaultChecked /><span>카드 결제</span></label><label><input type="radio" name="payment" /><span>간편 결제</span></label><label><input type="radio" name="payment" /><span>가상계좌</span></label></div></section>
         </div>
-        <aside className="checkout-summary"><h2>주문 상품</h2><div className="checkout-products">{lines.map(({ product, quantity }) => <div key={product.id}><div><Image src={product.image} alt="" fill sizes="70px" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></div><p><strong>{product.name}</strong><span>{quantity}개</span></p><b>{formatPrice((product.salePrice ?? product.price) * quantity)}</b></div>)}</div><dl><div><dt>상품 금액</dt><dd>{formatPrice(subtotal)}</dd></div><div><dt>배송비</dt><dd>{shipping === 0 ? "무료" : formatPrice(shipping)}</dd></div><div className="summary-total"><dt>총 결제 금액</dt><dd>{formatPrice(subtotal + shipping)}</dd></div></dl><button className="add-button" type="submit"><LockKey size={18} /> 데모 결제</button><p>버튼을 누르면 주문 완료 화면으로 이동하며 정보는 저장되지 않습니다.</p></aside>
+        <aside className="checkout-summary"><h2>주문 상품</h2><div className="checkout-products">{lines.map(({ product, quantity }) => <div key={product.id}><div><Image src={assetPath(product.image)} alt="" fill sizes="70px" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></div><p><strong>{product.name}</strong><span>{quantity}개</span></p><b>{formatPrice((product.salePrice ?? product.price) * quantity)}</b></div>)}</div><dl><div><dt>상품 금액</dt><dd>{formatPrice(subtotal)}</dd></div><div><dt>배송비</dt><dd>{shipping === 0 ? "무료" : formatPrice(shipping)}</dd></div><div className="summary-total"><dt>총 결제 금액</dt><dd>{formatPrice(subtotal + shipping)}</dd></div></dl><button className="add-button" type="submit"><LockKey size={18} /> 데모 결제</button><p>버튼을 누르면 주문 완료 화면으로 이동하며 정보는 저장되지 않습니다.</p></aside>
       </form>
     </div>
   );

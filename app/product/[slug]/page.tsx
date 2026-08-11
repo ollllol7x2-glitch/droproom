@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { ProductGrid } from "@/components/commerce/ProductGrid";
 import { ProductPurchase } from "@/components/commerce/ProductPurchase";
 import { getProduct, products } from "@/data/products";
+import { assetPath } from "@/lib/assets";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -28,10 +29,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="shell back-row"><Link href="/shop"><ArrowLeft size={17} /> 상품 목록</Link></div>
       <div className="shell detail-grid">
         <div className="detail-gallery">
-          <div className="detail-main-image"><Image src={product.image} alt={`${product.name} 제품 이미지`} fill priority sizes="(max-width: 860px) 100vw, 55vw" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></div>
+          <div className="detail-main-image"><Image src={assetPath(product.image)} alt={`${product.name} 제품 이미지`} fill priority sizes="(max-width: 860px) 100vw, 55vw" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></div>
           <div className="detail-support-grid">
-            <div><Image src={product.image} alt={`${product.name} 소재와 형태 디테일`} fill sizes="30vw" style={{ objectFit: "cover", objectPosition: "20% 60%" }} /></div>
-            <div><Image src={product.image} alt={`${product.name} 사용 장면`} fill sizes="30vw" style={{ objectFit: "cover", objectPosition: "80% 42%" }} /></div>
+            <div><Image src={assetPath(product.image)} alt={`${product.name} 소재와 형태 디테일`} fill sizes="30vw" style={{ objectFit: "cover", objectPosition: "20% 60%" }} /></div>
+            <div><Image src={assetPath(product.image)} alt={`${product.name} 사용 장면`} fill sizes="30vw" style={{ objectFit: "cover", objectPosition: "80% 42%" }} /></div>
           </div>
         </div>
         <ProductPurchase product={product} />
