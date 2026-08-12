@@ -25,6 +25,7 @@ export function Footer() {
       </div>
       <div className="shell footer-bottom">
         <div>
+          <Link href="/about">쇼핑몰 소개</Link>
           <Link href="/">이용약관</Link>
           <Link href="/">개인정보처리방침</Link>
           <Link href="/">입점 문의</Link>

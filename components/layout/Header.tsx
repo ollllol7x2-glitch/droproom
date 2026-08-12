@@ -21,8 +21,7 @@ const navItems = [
   ["BEST", "/shop?sort=best"],
   ["CATEGORY", "/shop"],
   ["DROP", "/#weekly-drop"],
-  ["GIFT", "/#gift"],
-  ["SET", "/#set"],
+  ["ABOUT", "/about"],
 ];
 
 export function Header() {
