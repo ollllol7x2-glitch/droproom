@@ -2678,9 +2678,9 @@ img {
 .selected-options {
   margin-top: 24px;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, #6531a8 20%, var(--line));
+  border: 1px solid color-mix(in srgb, var(--text) 10%, var(--line));
   border-radius: 18px;
-  background: color-mix(in srgb, #6531a8 4%, var(--surface));
+  background: color-mix(in srgb, var(--text) 4%, var(--surface));
 }
 
 .selected-options-header {
@@ -2811,7 +2811,7 @@ img {
   justify-content: flex-end;
   gap: 14px;
   padding: 18px;
-  background: color-mix(in srgb, #6531a8 7%, var(--surface));
+  background: color-mix(in srgb, var(--text) 7%, var(--surface));
 }
 
 .selected-options-total span {
