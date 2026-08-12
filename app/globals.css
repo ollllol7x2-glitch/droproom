@@ -4159,6 +4159,34 @@ img {
   word-break: break-word;
 }
 
+.question-answer-toggle {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  padding: 0 3px;
+  border: 0;
+  color: var(--text);
+  background: transparent;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.question-answer-toggle svg {
+  transition: transform 180ms ease;
+}
+
+.question-answer-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.question-answer-toggle:active {
+  transform: translateY(1px);
+}
+
 .question-answer {
   display: grid;
   grid-template-columns: 38px minmax(0, 1fr);
