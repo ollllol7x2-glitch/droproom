@@ -56,8 +56,9 @@ export default function AboutPage() {
             <p>책상과 가방, 방의 표정을 바꾸는 작은 물건을 고릅니다.</p>
           </div>
           <div className="about-manifesto-question">
-            <span>하나의 질문</span>
-            <strong>매일 쓰고 싶은가?</strong>
+            <span>DROP ROOM의 약속</span>
+            <strong>처음엔 눈에 들어오고,<br />쓸수록 더 좋아지는 물건</strong>
+            <p>잠깐 예쁜 물건보다 매일의 장면에 자연스럽게 남는 물건을 소개합니다.</p>
           </div>
         </div>
       </section>

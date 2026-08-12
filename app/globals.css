@@ -9472,7 +9472,8 @@ main:has(
 }
 
 .about-manifesto-question span { font-size: 16px; font-weight: 850; }
-.about-manifesto-question strong { font-size: clamp(22px, 2.2vw, 30px); line-height: 1.25; word-break: keep-all; }
+.about-manifesto-question strong { font-size: clamp(22px, 2.2vw, 30px); line-height: 1.35; word-break: keep-all; }
+.about-manifesto-question p { margin: 4px 0 0; color: color-mix(in srgb, #171719 72%, transparent); font-size: 16px; line-height: 1.6; word-break: keep-all; }
 .about-principles, .about-brands { padding-block: clamp(96px, 11vw, 170px); }
 .about-section-heading { display: grid; max-width: 760px; gap: 18px; }
 
