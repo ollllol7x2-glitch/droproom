@@ -12,7 +12,10 @@ const replacements = [
   ["app/admin/page.tsx", "scripts/pages-overrides/admin-page.tsx"],
   ["app/shop/page.tsx", "scripts/pages-overrides/shop-page.tsx"],
 ];
-const removedForExport = ["app/api/auth/[...nextauth]/route.ts"];
+const removedForExport = [
+  "app/api/auth/[...nextauth]/route.ts",
+  "app/api/chat/route.ts",
+];
 
 async function backUp(relativePath) {
   const source = path.join(root, relativePath);

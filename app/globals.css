@@ -3505,7 +3505,7 @@ img {
   }
 }
 
-/* DROP ROOM V2 visual direction */
+/* DROP ROOM brand system */
 .brand-logo {
   display: block;
   flex: none;
@@ -3520,7 +3520,7 @@ img {
 
 .brand-logo--header {
   width: clamp(142px, 13vw, 178px);
-  aspect-ratio: 514.69 / 59.5675;
+  aspect-ratio: 420 / 64;
   -webkit-mask-image: var(--brand-header-image);
   mask-image: var(--brand-header-image);
 }
@@ -3533,7 +3533,7 @@ img {
 }
 
 .brand-logo--symbol {
-  aspect-ratio: 73.5424 / 84.9281;
+  aspect-ratio: 160 / 96;
   -webkit-mask-image: var(--brand-symbol-image);
   mask-image: var(--brand-symbol-image);
 }
@@ -7085,4 +7085,254 @@ main:has(
   .loading-page
 ) {
   padding-bottom: clamp(80px, 8vw, 150px);
+}
+
+/* AI shopping assistant */
+.shop-assistant {
+  position: fixed;
+  right: clamp(18px, 3vw, 42px);
+  bottom: clamp(18px, 3vw, 34px);
+  z-index: 35;
+  display: grid;
+  justify-items: end;
+  gap: 12px;
+}
+
+.shop-assistant-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 50px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--accent-ink);
+  background: var(--accent);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--accent) 32%, transparent);
+  font-size: 16px;
+  font-weight: 780;
+  cursor: pointer;
+}
+
+.shop-assistant-trigger:active,
+.shop-assistant-close:active,
+.shop-assistant-form button:active,
+.shop-assistant-quick button:active,
+.shop-assistant-providers button:active {
+  transform: translateY(1px);
+}
+
+.shop-assistant-panel {
+  display: grid;
+  width: min(390px, calc(100vw - 32px));
+  max-height: min(600px, calc(100dvh - 112px));
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--bg);
+  box-shadow: var(--shadow);
+}
+
+.shop-assistant-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.shop-assistant-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 780;
+  letter-spacing: 0.08em;
+}
+
+.shop-assistant-head h2 {
+  margin: 7px 0 0;
+  font-size: 21px;
+  letter-spacing: -0.045em;
+}
+
+.shop-assistant-close {
+  display: inline-grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--text);
+  background: transparent;
+  cursor: pointer;
+}
+
+.shop-assistant-providers {
+  display: flex;
+  gap: 6px;
+  padding: 12px 20px 0;
+}
+
+.shop-assistant-providers button,
+.shop-assistant-quick button {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.shop-assistant-providers button {
+  padding: 0 12px;
+}
+
+.shop-assistant-providers button.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.shop-assistant-messages {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  min-height: 116px;
+  max-height: 270px;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+
+.shop-assistant-message {
+  width: fit-content;
+  max-width: 88%;
+  margin: 0;
+  padding: 11px 13px;
+  border-radius: var(--radius-field);
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.shop-assistant-message.assistant {
+  background: var(--surface);
+}
+
+.shop-assistant-message.user {
+  justify-self: end;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.shop-assistant-message.loading {
+  color: var(--muted);
+}
+
+.shop-assistant-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 0 20px 14px;
+}
+
+.shop-assistant-quick button {
+  min-height: 32px;
+  padding: 0 10px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: left;
+}
+
+.shop-assistant-error {
+  margin: 0 20px 10px;
+  color: #a2263f;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.shop-assistant-form {
+  display: grid;
+  grid-template-columns: 1fr 42px;
+  gap: 8px;
+  padding: 12px 20px 0;
+  border-top: 1px solid var(--line);
+}
+
+.shop-assistant-form input {
+  min-width: 0;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-field);
+  color: var(--text);
+  background: var(--surface);
+  font-size: 15px;
+}
+
+.shop-assistant-form input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+.shop-assistant-form button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--radius-field);
+  color: var(--accent-ink);
+  background: var(--accent);
+  cursor: pointer;
+}
+
+.shop-assistant-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+.shop-assistant-notice {
+  margin: 9px 20px 17px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+body:has(.admin-page) .shop-assistant {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .shop-assistant {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .shop-assistant-trigger {
+    width: 52px;
+    height: 52px;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .shop-assistant-trigger span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .shop-assistant-panel {
+    max-height: min(570px, calc(100dvh - 96px));
+  }
+
+  .shop-assistant-messages {
+    max-height: 230px;
+  }
 }

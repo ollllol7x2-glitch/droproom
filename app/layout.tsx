@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import type { CSSProperties } from "react";
 import "./globals.css";
 import { StoreProvider } from "@/components/commerce/StoreProvider";
+import { ShopAssistant } from "@/components/commerce/ShopAssistant";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { assetPath } from "@/lib/assets";
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <StoreProvider>
           <Header />
           <main>{children}</main>
+          <ShopAssistant />
           <Footer />
         </StoreProvider>
       </body>
