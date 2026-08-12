@@ -114,6 +114,11 @@ function formatDate(value: string) {
   return new Intl.DateTimeFormat("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(value));
 }
 
+function maskAuthor(author: string) {
+  const characters = Array.from(author.trim());
+  return characters.length > 1 ? `${characters[0]}${"*".repeat(characters.length - 1)}` : "*";
+}
+
 export function ProductQuestions({ productSlug, productName }: { productSlug: string; productName: string }) {
   const { user, loading: authLoading, configured, signInWithGoogle } = useSupabaseUser();
   const [questions, setQuestions] = useState<ProductQuestion[]>([]);
@@ -325,7 +330,7 @@ export function ProductQuestions({ productSlug, productName }: { productSlug: st
             <label className="question-private-toggle"><input type="checkbox" checked={editingDraft.isPrivate} onChange={(event) => setEditingDraft((current) => ({ ...current, isPrivate: event.target.checked }))} /><span><LockKey size={18} /> 비공개 질문</span></label>
             <div><button type="submit" disabled={saving}><Check size={18} weight="bold" /> 수정 완료</button><button type="button" onClick={() => setEditingId(null)}><X size={18} /> 취소</button></div>
           </form> : <>
-            <header><div className="question-status-row"><span className={question.answer ? "answered" : "waiting"}>{question.answer ? <CheckCircle size={17} weight="fill" /> : <ChatCircleDots size={17} />} {question.answer ? "답변 완료" : "답변 대기"}</span>{question.isPrivate && <span className="private"><LockKey size={16} /> 비공개</span>}</div><div className="question-meta"><strong>{question.author}</strong><span>{formatDate(question.createdAt)}{question.updatedAt ? " 수정됨" : ""}</span></div></header>
+            <header><div className="question-status-row"><span className={question.answer ? "answered" : "waiting"}>{question.answer ? <CheckCircle size={17} weight="fill" /> : <ChatCircleDots size={17} />} {question.answer ? "답변 완료" : "답변 대기"}</span>{question.isPrivate && <span className="private"><LockKey size={16} /> 비공개</span>}</div><div className="question-meta"><strong aria-label="작성자 정보 비공개">{maskAuthor(question.author)}</strong><span>{formatDate(question.createdAt)}{question.updatedAt ? " 수정됨" : ""}</span></div></header>
             <h4>{question.title}</h4><p className="question-body">{question.content}</p>
             {question.answer && <div className="question-answer"><span>A</span><div><strong>DROP ROOM 답변</strong><p>{question.answer}</p>{question.answeredAt && <small>{formatDate(question.answeredAt)}</small>}</div></div>}
             {canManage(question) && (deletingId === question.id ? <div className="question-delete-confirm" role="alert"><span>이 질문을 삭제할까요?</span><button type="button" disabled={saving} onClick={() => void deleteQuestion(question)}>삭제</button><button type="button" onClick={() => setDeletingId(null)}>취소</button></div> : <div className="question-item-actions"><button type="button" onClick={() => startEditing(question)}><PencilSimple size={17} /> 수정</button><button type="button" onClick={() => setDeletingId(question.id)}><Trash size={17} /> 삭제</button></div>)}
