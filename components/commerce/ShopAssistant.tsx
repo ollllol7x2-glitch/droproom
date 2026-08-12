@@ -2,6 +2,7 @@
 
 import { ArrowRight, ChatCircleDots, PaperPlaneTilt, Sparkle, X } from "@phosphor-icons/react";
 import { FormEvent, type ReactNode, useEffect, useRef, useState } from "react";
+import { products } from "@/data/products";
 import { assetPath } from "@/lib/assets";
 
 type Provider = "groq" | "gemini" | "openai";
@@ -23,31 +24,43 @@ const initialMessage: Message = {
 const productPathPattern = /\/(?:droproom\/)?product\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?/gi;
 
 function renderMessageContent(content: string) {
-  const matches = [...content.matchAll(productPathPattern)];
-  if (matches.length === 0) return content;
+  const normalizedContent = content.toLowerCase();
+  const pathSlugs = new Set(
+    [...content.matchAll(productPathPattern)].map((match) => match[1].toLowerCase()),
+  );
+  const referencedProducts = products
+    .filter((product) =>
+      pathSlugs.has(product.slug) ||
+      normalizedContent.includes(product.slug.toLowerCase()) ||
+      content.includes(product.name),
+    )
+    .slice(0, 4);
 
-  const parts: ReactNode[] = [];
-  let cursor = 0;
+  if (referencedProducts.length === 0) return content;
 
-  matches.forEach((match, index) => {
-    const matchIndex = match.index ?? 0;
-    const text = content.slice(cursor, matchIndex);
-    if (text) parts.push(<span key={`text-${index}`}>{text}</span>);
-
-    parts.push(
-      <a
-        className="shop-assistant-product-link"
-        href={assetPath(`/product/${match[1].toLowerCase()}`)}
-        key={`product-${matchIndex}`}
-      >
-        상품 보기 <ArrowRight size={15} weight="bold" />
-      </a>,
+  let cleanContent = content.replace(productPathPattern, "");
+  referencedProducts.forEach((product) => {
+    cleanContent = cleanContent.replace(
+      new RegExp(`\\s*\\|?\\s*${product.slug.replaceAll("-", "\\-")}(?=\\s|$)`, "gi"),
+      "",
     );
-    cursor = matchIndex + match[0].length;
   });
+  cleanContent = cleanContent.replace(/\n{3,}/g, "\n\n").trim();
 
-  const remainder = content.slice(cursor);
-  if (remainder) parts.push(<span key="text-final">{remainder}</span>);
+  const parts: ReactNode[] = [<span key="message-copy">{cleanContent}</span>];
+  parts.push(
+    <span className="shop-assistant-product-links" key="product-links">
+      {referencedProducts.map((product) => (
+        <a
+          className="shop-assistant-product-link"
+          href={assetPath(`/product/${product.slug}`)}
+          key={product.slug}
+        >
+          {product.name} 보기 <ArrowRight size={15} weight="bold" />
+        </a>
+      ))}
+    </span>,
+  );
   return parts;
 }
 

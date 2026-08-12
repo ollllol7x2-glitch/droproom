@@ -7255,6 +7255,14 @@ main:has(
   vertical-align: middle;
 }
 
+.shop-assistant-product-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 7px;
+  white-space: normal;
+}
+
 .shop-assistant-product-link:hover {
   background: #171719;
 }
