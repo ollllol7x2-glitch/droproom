@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 export function Footer() {
   return (
@@ -11,7 +12,9 @@ export function Footer() {
       </div>
       <div className="shell footer-main">
         <div>
-          <p className="footer-brand-name">DROP ROOM</p>
+          <Link className="footer-brand-lockup" href="/" aria-label="DROP ROOM 홈">
+            <BrandLogo variant="lockup" />
+          </Link>
           <p className="footer-copy">문구부터 방 꾸미기까지, 오래 곁에 둘 물건을 고릅니다.</p>
         </div>
         <form className="newsletter">

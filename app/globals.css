@@ -5956,11 +5956,14 @@ img {
   background: color-mix(in srgb, var(--surface) 72%, var(--bg));
 }
 
-.footer-brand-name {
-  margin-bottom: 16px;
-  font-size: 16px;
-  font-weight: 850;
-  letter-spacing: 0.16em;
+.footer-brand-lockup {
+  display: inline-flex;
+  width: clamp(116px, 10vw, 148px);
+  color: var(--text);
+}
+
+.footer-brand-lockup .brand-logo--lockup {
+  width: 100%;
 }
 
 @supports (animation-timeline: view()) {
