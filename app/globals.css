@@ -2,14 +2,16 @@
 
 :root {
   --bg: #ffffff;
-  --surface: #f0ecf3;
-  --surface-strong: #e4ddec;
-  --text: #0f0f10;
+  --surface: #f2f5fc;
+  --surface-strong: #ddecf8;
+  --text: #171719;
   --muted: #655f69;
-  --line: #ddd6e2;
-  --accent: #c7a9e6;
+  --line: #d8e0ee;
+  --accent: #d8ef35;
   --accent-ink: #17111d;
-  --sky: #a7c8f2;
+  --sky: #ddeef8;
+  --cobalt: #3157d5;
+  --lilac: #d8c9f4;
   --peach: #ffc4b2;
   --sage: #b7d8c5;
   --header: rgba(255, 255, 255, 0.82);
@@ -3520,20 +3522,20 @@ img {
 
 .brand-logo--header {
   width: clamp(142px, 13vw, 178px);
-  aspect-ratio: 420 / 64;
+  aspect-ratio: 1425 / 220;
   -webkit-mask-image: var(--brand-header-image);
   mask-image: var(--brand-header-image);
 }
 
 .brand-logo--lockup {
   width: 100%;
-  aspect-ratio: 344.2438 / 133.6975;
+  aspect-ratio: 1306 / 707;
   -webkit-mask-image: var(--brand-lockup-image);
   mask-image: var(--brand-lockup-image);
 }
 
 .brand-logo--symbol {
-  aspect-ratio: 160 / 96;
+  aspect-ratio: 1081 / 637;
   -webkit-mask-image: var(--brand-symbol-image);
   mask-image: var(--brand-symbol-image);
 }

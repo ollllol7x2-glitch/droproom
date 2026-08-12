@@ -22,9 +22,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const assetVariables = {
-    "--brand-header-image": `url("${assetPath("/brand/drop-room-header.svg")}")`,
-    "--brand-lockup-image": `url("${assetPath("/brand/drop-room-lockup.svg")}")`,
-    "--brand-symbol-image": `url("${assetPath("/brand/drop-room-symbol.svg")}")`,
+    "--brand-header-image": `url("${assetPath("/brand/drop-room-header-new.png")}")`,
+    "--brand-lockup-image": `url("${assetPath("/brand/drop-room-lockup-new.png")}")`,
+    "--brand-symbol-image": `url("${assetPath("/brand/drop-room-symbol-new.png")}")`,
     "--hero-poster-image": `url("${assetPath("/images/drop-room-v2/hero-dream-room.webp")}")`,
   } as CSSProperties;
 
