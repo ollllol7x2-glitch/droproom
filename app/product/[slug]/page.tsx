@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductGrid } from "@/components/commerce/ProductGrid";
 import { ProductPurchase } from "@/components/commerce/ProductPurchase";
+import { ProductReviews } from "@/components/commerce/ProductReviews";
 import { categories, getProduct, products, type CategoryKey } from "@/data/products";
 import { assetPath } from "@/lib/assets";
 
@@ -99,6 +100,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
       </section>
+      <ProductReviews productSlug={product.slug} productName={product.name} />
       {related.length > 0 && <section className="shell related-section"><div className="product-section-head"><div><h2>같이 두기 좋은 물건</h2><p>같은 카테고리에서 함께 고른 제품입니다.</p></div></div><ProductGrid items={related} /></section>}
     </div>
   );
