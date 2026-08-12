@@ -29,6 +29,8 @@ export function ShopAssistant() {
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   useEffect(() => {
     if (!open) return;
@@ -53,22 +55,26 @@ export function ShopAssistant() {
     setDraft("");
     setError("");
 
-    if (isStaticExport) {
-      setMessages((current) => [
-        ...current,
-        {
-          role: "assistant",
-          content: "AI 상담은 API 키를 안전하게 보호하는 서버에서 제공됩니다. 현재 GitHub Pages 미리보기에서는 연결할 수 없습니다.",
-        },
-      ]);
-      return;
-    }
-
     setPending(true);
     try {
-      const response = await fetch(assetPath("/api/chat"), {
+      if (isStaticExport && (!supabaseUrl || !supabasePublishableKey)) {
+        throw new Error("AI 상담 서버 설정을 확인해 주세요.");
+      }
+
+      const endpoint = isStaticExport
+        ? `${supabaseUrl}/functions/v1/shop-assistant`
+        : assetPath("/api/chat");
+      const response = await fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(isStaticExport
+            ? {
+                apikey: supabasePublishableKey!,
+                Authorization: `Bearer ${supabasePublishableKey}`,
+              }
+            : {}),
+        },
         body: JSON.stringify({ provider, messages: nextMessages }),
       });
       const data = await response.json().catch(() => null);
