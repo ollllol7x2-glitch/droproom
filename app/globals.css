@@ -3094,6 +3094,55 @@ img {
   box-shadow: inset 0 0 0 1px var(--text);
 }
 
+.toss-payment-intro {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.toss-payment-shell {
+  position: relative;
+  overflow: hidden;
+  min-height: 290px;
+  margin-top: 22px;
+  padding: 8px 4px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: #fff;
+}
+
+.toss-payment-loading {
+  display: grid;
+  min-height: 260px;
+  place-items: center;
+  margin: 0;
+  padding: 30px;
+  color: #6b6670;
+  font-size: 16px;
+  text-align: center;
+}
+
+.toss-payment-loading + #toss-payment-methods:not(:empty) {
+  margin-top: -260px;
+}
+
+.toss-payment-error {
+  margin: 14px 0 0;
+  padding: 14px 16px;
+  border-radius: var(--radius-field);
+  color: #982f39;
+  background: #fff0f1;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.checkout-summary .add-button:disabled {
+  opacity: 0.48;
+  cursor: wait;
+  box-shadow: none;
+}
+
 .checkout-products {
   display: grid;
   gap: 14px;
@@ -3168,6 +3217,81 @@ img {
 .complete-page > button,
 .complete-page > a {
   margin-top: 30px;
+}
+
+.toss-result-page > svg {
+  color: #3182f6;
+}
+
+.toss-result-page--failure > svg {
+  color: #e14d5a;
+}
+
+.toss-result-card {
+  width: min(720px, 100%);
+  margin-top: 34px;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.toss-result-notice {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  padding: 16px;
+  border-radius: var(--radius-field);
+  color: #4b3b12;
+  background: #fff5cd;
+}
+
+.toss-result-notice svg {
+  margin-top: 1px;
+}
+
+.toss-result-notice strong,
+.toss-result-notice p {
+  font-size: 16px;
+}
+
+.toss-result-notice p {
+  margin: 5px 0 0;
+  line-height: 1.55;
+}
+
+.toss-result-card dl {
+  display: grid;
+  gap: 0;
+  margin: 18px 0 0;
+}
+
+.toss-result-card dl > div {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 16px;
+}
+
+.toss-result-card dl > div:last-child {
+  border-bottom: 0;
+}
+
+.toss-result-card dt {
+  color: var(--muted);
+}
+
+.toss-result-card dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-weight: 680;
+}
+
+.toss-result-actions a {
+  gap: 8px;
 }
 
 .account-page {
@@ -3347,6 +3471,29 @@ img {
 
   .loading-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .toss-payment-shell {
+    margin-inline: -8px;
+    border-radius: 18px;
+  }
+
+  .toss-result-card {
+    padding: 20px;
+  }
+
+  .toss-result-card dl > div {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .toss-result-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .toss-result-actions a {
+    width: 100%;
   }
 }
 

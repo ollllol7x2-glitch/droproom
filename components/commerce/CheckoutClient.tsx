@@ -10,14 +10,21 @@ import {
 } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
+import type { TossPaymentsWidgets } from "@tosspayments/tosspayments-sdk";
 import { useSupabaseUser } from "@/components/auth/useSupabaseUser";
 import { KakaoAddressFields } from "@/components/commerce/KakaoAddressFields";
 import { useStore } from "@/components/commerce/StoreProvider";
+import { TossPaymentWidget } from "@/components/commerce/TossPaymentWidget";
 import { getProductsByIds } from "@/data/products";
 import { assetPath } from "@/lib/assets";
 import { formatPrice } from "@/lib/format";
+import {
+  createTossOrderId,
+  getTossRedirectUrl,
+  TOSS_PENDING_PAYMENT_KEY,
+  type PendingTossPayment,
+} from "@/lib/tossPayments";
 
 type DeliveryMode = "saved" | "new";
 
@@ -46,10 +53,11 @@ function readCheckoutAddress(value: unknown): CheckoutAddress | null {
 }
 
 export function CheckoutClient() {
-  const router = useRouter();
   const { cart } = useStore();
   const { user } = useSupabaseUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [tossWidgets, setTossWidgets] = useState<TossPaymentsWidgets | null>(null);
+  const [paymentError, setPaymentError] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
@@ -71,10 +79,6 @@ export function CheckoutClient() {
     0,
   );
   const shipping = subtotal >= 50000 ? 0 : 3000;
-
-  useEffect(() => {
-    router.prefetch("/checkout/complete");
-  }, [router]);
 
   useEffect(() => {
     if (!user) {
@@ -104,11 +108,50 @@ export function CheckoutClient() {
     setDeliveryMode(parsedAddress ? "saved" : "new");
   }, [user]);
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isSubmitting) return;
+
+    if (!tossWidgets) {
+      setPaymentError("결제 UI가 아직 준비되지 않았습니다. 잠시 후 다시 시도해 주세요.");
+      return;
+    }
+
     setIsSubmitting(true);
-    router.replace("/checkout/complete");
+    setPaymentError("");
+
+    const orderId = createTossOrderId();
+    const orderName = lines.length > 1
+      ? `${lines[0].product.name} 외 ${lines.length - 1}건`
+      : lines[0].quantity > 1
+        ? `${lines[0].product.name} ${lines[0].quantity}개`
+        : lines[0].product.name;
+    const pendingPayment: PendingTossPayment = {
+      orderId,
+      orderName,
+      amount: subtotal + shipping,
+      createdAt: new Date().toISOString(),
+    };
+
+    sessionStorage.setItem(TOSS_PENDING_PAYMENT_KEY, JSON.stringify(pendingPayment));
+
+    try {
+      await tossWidgets.requestPayment({
+        orderId,
+        orderName,
+        successUrl: getTossRedirectUrl("/checkout/toss-success/"),
+        failUrl: getTossRedirectUrl("/checkout/toss-fail/"),
+        customerEmail: customerEmail || undefined,
+        customerName: customerName || undefined,
+        customerMobilePhone: customerPhone.replace(/\D/g, "") || undefined,
+      });
+    } catch (error) {
+      const message = error instanceof Error
+        ? error.message
+        : "결제창을 열지 못했습니다. 잠시 후 다시 시도해 주세요.";
+      setPaymentError(message);
+      setIsSubmitting(false);
+    }
   };
 
   if (lines.length === 0) {
@@ -249,11 +292,13 @@ export function CheckoutClient() {
 
             <section>
               <h2>결제 수단</h2>
-              <div className="payment-options">
-                <label><input type="radio" name="payment" defaultChecked /><span>카드 결제</span></label>
-                <label><input type="radio" name="payment" /><span>간편 결제</span></label>
-                <label><input type="radio" name="payment" /><span>가상계좌</span></label>
-              </div>
+              <p className="toss-payment-intro">토스페이먼츠 SDK v2 테스트 결제입니다. 실제 금액은 청구되지 않습니다.</p>
+              <TossPaymentWidget
+                amount={subtotal + shipping}
+                onReady={setTossWidgets}
+                onError={setPaymentError}
+              />
+              {paymentError && <p className="toss-payment-error" role="alert">{paymentError}</p>}
             </section>
           </div>
 
@@ -273,10 +318,10 @@ export function CheckoutClient() {
               <div><dt>배송비</dt><dd>{shipping === 0 ? "무료" : formatPrice(shipping)}</dd></div>
               <div className="summary-total"><dt>총 결제 금액</dt><dd>{formatPrice(subtotal + shipping)}</dd></div>
             </dl>
-            <button className="add-button" type="submit" disabled={isSubmitting} aria-busy={isSubmitting}>
-              <LockKey size={18} /> {isSubmitting ? "주문 완료 중" : "데모 결제"}
+            <button className="add-button" type="submit" disabled={!tossWidgets || isSubmitting} aria-busy={isSubmitting}>
+              <LockKey size={18} /> {isSubmitting ? "결제창 여는 중" : "토스로 테스트 결제"}
             </button>
-            <p>버튼을 누르면 주문 완료 화면으로 이동하며 정보는 저장되지 않습니다.</p>
+            <p>테스트 키를 사용하며 실제 결제와 배송은 진행되지 않습니다.</p>
           </aside>
         </form>
       </div>
