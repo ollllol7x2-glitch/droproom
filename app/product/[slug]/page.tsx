@@ -109,7 +109,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
       </section>
-      <ProductReviews productSlug={product.slug} productName={product.name} />
+      <ProductReviews productSlug={product.slug} productName={product.name} category={product.category} colors={product.colors} />
       <ProductQuestions productSlug={product.slug} productName={product.name} />
       <section className="shell related-section" id="related-products" aria-labelledby="related-products-title">
         <div className="product-section-head">

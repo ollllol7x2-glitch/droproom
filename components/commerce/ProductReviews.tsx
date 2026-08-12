@@ -2,8 +2,12 @@
 
 import { Check, PencilSimple, Star, Trash, X } from "@phosphor-icons/react";
 import type { User } from "@supabase/supabase-js";
+import Image from "next/image";
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSupabaseUser } from "@/components/auth/useSupabaseUser";
+import type { CategoryKey } from "@/data/products";
+import { getSeedReviews } from "@/data/reviews";
+import { assetPath } from "@/lib/assets";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 
 type ProductReview = {
@@ -14,6 +18,10 @@ type ProductReview = {
   content: string;
   createdAt: string;
   updatedAt?: string;
+  purchasedOption?: string;
+  photo?: string;
+  photoAlt?: string;
+  seeded?: boolean;
   local?: boolean;
 };
 
@@ -75,7 +83,7 @@ function StarSelector({ value, onChange, label }: { value: number; onChange: (ra
   </div>;
 }
 
-export function ProductReviews({ productSlug, productName }: { productSlug: string; productName: string }) {
+export function ProductReviews({ productSlug, productName, category, colors }: { productSlug: string; productName: string; category: CategoryKey; colors: string[] }) {
   const { user, loading: authLoading, configured, signInWithGoogle } = useSupabaseUser();
   const [reviews, setReviews] = useState<ProductReview[]>([]);
   const [draft, setDraft] = useState<ReviewDraft>({ author: "", rating: 5, content: "" });
@@ -168,10 +176,13 @@ export function ProductReviews({ productSlug, productName }: { productSlug: stri
     };
   }, [reviewFormOpen, saving]);
 
-  const average = useMemo(() => reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0, [reviews]);
-  const distribution = useMemo(() => [5, 4, 3, 2, 1].map((rating) => ({ rating, count: reviews.filter((review) => review.rating === rating).length })), [reviews]);
+  const seedReviews = useMemo<ProductReview[]>(() => getSeedReviews(productSlug, category, colors).map((review) => ({ ...review, userId: "seed", seeded: true })), [category, colors, productSlug]);
+  const displayReviews = useMemo(() => [...reviews, ...seedReviews], [reviews, seedReviews]);
+  const photoReviews = useMemo(() => displayReviews.filter((review) => review.photo), [displayReviews]);
+  const average = useMemo(() => displayReviews.length ? displayReviews.reduce((sum, review) => sum + review.rating, 0) / displayReviews.length : 0, [displayReviews]);
+  const distribution = useMemo(() => [5, 4, 3, 2, 1].map((rating) => ({ rating, count: displayReviews.filter((review) => review.rating === rating).length })), [displayReviews]);
   const validate = (value: ReviewDraft) => !value.author.trim() ? "작성자 이름을 입력해 주세요." : value.content.trim().length < 5 ? "리뷰를 5자 이상 입력해 주세요." : "";
-  const canManage = (review: ProductReview) => review.local || Boolean(user && review.userId === user.id);
+  const canManage = (review: ProductReview) => !review.seeded && (review.local || Boolean(user && review.userId === user.id));
 
   const requestLogin = () => void signInWithGoogle(`/product/${productSlug}/#review-form`);
   const openReviewForm = () => { setError(""); setMessage(""); setReviewFormOpen(true); };
@@ -238,18 +249,18 @@ export function ProductReviews({ productSlug, productName }: { productSlug: stri
     </div>
     <div className="product-reviews-layout">
       <aside className="review-summary" aria-label="리뷰 평점 요약">
-        <span>평균 평점</span><strong>{reviews.length ? average.toFixed(1) : "0.0"}</strong>
+        <span>평균 평점</span><strong>{displayReviews.length ? average.toFixed(1) : "0.0"}</strong>
         <div className="review-summary-stars" aria-label={`5점 만점에 ${average.toFixed(1)}점`}>{[1, 2, 3, 4, 5].map((rating) => <Star key={rating} size={20} weight={rating <= Math.round(average) ? "fill" : "regular"} />)}</div>
-        <p>{reviews.length}개의 리뷰</p>
-        <div className="review-distribution">{distribution.map(({ rating, count }) => <div key={rating}><span>{rating}점</span><div aria-hidden="true"><i style={{ width: reviews.length ? `${(count / reviews.length) * 100}%` : "0%" }} /></div><small>{count}</small></div>)}</div>
+        <p>{displayReviews.length}개의 리뷰</p>
+        <div className="review-distribution">{distribution.map(({ rating, count }) => <div key={rating}><span>{rating}점</span><div aria-hidden="true"><i style={{ width: displayReviews.length ? `${(count / displayReviews.length) * 100}%` : "0%" }} /></div><small>{count}</small></div>)}</div>
       </aside>
       <div className="review-content">
-        <div className="review-list-heading"><h3>등록된 리뷰</h3><span>{reviews.length}</span></div>
+        {photoReviews.length > 0 && <div className="photo-review-section" aria-labelledby="photo-review-title"><div className="photo-review-heading"><h3 id="photo-review-title">포토 리뷰</h3><span>{photoReviews.length}</span></div><div className="photo-review-rail">{photoReviews.map((review) => <a key={review.id} href={`#${review.id}`} aria-label={`${review.author}님의 포토 리뷰로 이동`}><Image src={assetPath(review.photo!)} alt={review.photoAlt || `${productName} 포토 리뷰`} fill sizes="(max-width: 560px) 44vw, 190px" /></a>)}</div></div>}
+        <div className="review-list-heading"><h3>등록된 리뷰</h3><span>{displayReviews.length}</span></div>
         <div className="review-feedback" aria-live="polite">{error && <p className="review-error" role="alert">{error}</p>}{message && <p>{message}</p>}</div>
         <div className="review-list" aria-busy={!ready}>
           {!ready && <div className="review-empty"><p>리뷰를 불러오고 있습니다.</p></div>}
-          {ready && !reviews.length && <div className="review-empty"><Star size={30} /><h3>아직 등록된 리뷰가 없어요.</h3><p>이 상품을 먼저 사용해 본 경험을 남겨주세요.</p></div>}
-          {ready && reviews.map((review) => <article className="review-item" key={review.id}>{editingId === review.id ? <form className="review-edit-form" onSubmit={updateReview}><StarSelector value={editingDraft.rating} onChange={(rating) => setEditingDraft((current) => ({ ...current, rating }))} label="수정할 리뷰 별점" /><label><span>작성자</span><input value={editingDraft.author} maxLength={20} onChange={(event) => setEditingDraft((current) => ({ ...current, author: event.target.value }))} /></label><label><span>리뷰 내용</span><textarea value={editingDraft.content} rows={4} maxLength={500} onChange={(event) => setEditingDraft((current) => ({ ...current, content: event.target.value }))} /></label><div><button type="submit" disabled={saving}><Check size={18} weight="bold" /> 수정 완료</button><button type="button" onClick={() => setEditingId(null)}><X size={18} /> 취소</button></div></form> : <><header><div><strong>{review.author}</strong><span>{formatDate(review.createdAt)}{review.updatedAt ? " 수정됨" : ""}</span></div><div className="review-item-stars" aria-label={`5점 만점에 ${review.rating}점`}>{[1, 2, 3, 4, 5].map((rating) => <Star key={rating} size={18} weight={rating <= review.rating ? "fill" : "regular"} />)}</div></header><p>{review.content}</p>{canManage(review) && (deletingId === review.id ? <div className="review-delete-confirm" role="alert"><span>이 리뷰를 삭제할까요?</span><button type="button" disabled={saving} onClick={() => void deleteReview(review)}>삭제</button><button type="button" onClick={() => setDeletingId(null)}>취소</button></div> : <div className="review-item-actions"><button type="button" onClick={() => startEditing(review)}><PencilSimple size={17} /> 수정</button><button type="button" onClick={() => setDeletingId(review.id)}><Trash size={17} /> 삭제</button></div>)}</>}</article>)}
+          {ready && displayReviews.map((review) => <article className="review-item" id={review.id} key={review.id}>{editingId === review.id ? <form className="review-edit-form" onSubmit={updateReview}><StarSelector value={editingDraft.rating} onChange={(rating) => setEditingDraft((current) => ({ ...current, rating }))} label="수정할 리뷰 별점" /><label><span>작성자</span><input value={editingDraft.author} maxLength={20} onChange={(event) => setEditingDraft((current) => ({ ...current, author: event.target.value }))} /></label><label><span>리뷰 내용</span><textarea value={editingDraft.content} rows={4} maxLength={500} onChange={(event) => setEditingDraft((current) => ({ ...current, content: event.target.value }))} /></label><div><button type="submit" disabled={saving}><Check size={18} weight="bold" /> 수정 완료</button><button type="button" onClick={() => setEditingId(null)}><X size={18} /> 취소</button></div></form> : <><header><div><strong>{review.author}</strong><span>{formatDate(review.createdAt)}{review.updatedAt ? " 수정됨" : ""}</span>{review.purchasedOption && <small>구매 옵션 · {review.purchasedOption}</small>}</div><div className="review-item-stars" aria-label={`5점 만점에 ${review.rating}점`}>{[1, 2, 3, 4, 5].map((rating) => <Star key={rating} size={18} weight={rating <= review.rating ? "fill" : "regular"} />)}</div></header>{review.photo && <figure className="review-photo"><Image src={assetPath(review.photo)} alt={review.photoAlt || `${productName} 포토 리뷰`} fill sizes="(max-width: 560px) 100vw, 560px" /></figure>}<p>{review.content}</p>{canManage(review) && (deletingId === review.id ? <div className="review-delete-confirm" role="alert"><span>이 리뷰를 삭제할까요?</span><button type="button" disabled={saving} onClick={() => void deleteReview(review)}>삭제</button><button type="button" onClick={() => setDeletingId(null)}>취소</button></div> : <div className="review-item-actions"><button type="button" onClick={() => startEditing(review)}><PencilSimple size={17} /> 수정</button><button type="button" onClick={() => setDeletingId(review.id)}><Trash size={17} /> 삭제</button></div>)}</>}</article>)}
         </div>
       </div>
     </div>
