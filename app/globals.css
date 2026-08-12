@@ -2585,6 +2585,22 @@ img {
   cursor: pointer;
 }
 
+.purchase-actions .add-button {
+  color: #ffffff;
+  background: #6531a8;
+  box-shadow: 0 10px 24px rgba(76, 31, 130, 0.22);
+}
+
+.purchase-actions .add-button:hover {
+  color: #ffffff;
+  background: #51238f;
+  transform: translateY(-2px);
+}
+
+.purchase-actions .add-button:active {
+  transform: scale(0.98);
+}
+
 .detail-wish {
   display: grid;
   place-items: center;
