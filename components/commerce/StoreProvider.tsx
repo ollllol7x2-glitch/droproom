@@ -87,6 +87,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
+  const clearCart = useCallback(() => {
+    setCart([]);
+  }, []);
+
   const toggleWishlist = useCallback((productId: string) => {
     setWishlist((current) =>
       current.includes(productId)
@@ -103,11 +107,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       addToCart,
       removeFromCart,
       updateQuantity,
-      clearCart: () => setCart([]),
+      clearCart,
       toggleWishlist,
       isWishlisted: (productId: string) => wishlist.includes(productId),
     }),
-    [cart, wishlist, addToCart, removeFromCart, updateQuantity, toggleWishlist],
+    [cart, wishlist, addToCart, removeFromCart, updateQuantity, clearCart, toggleWishlist],
   );
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

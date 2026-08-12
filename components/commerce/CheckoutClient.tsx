@@ -47,8 +47,9 @@ function readCheckoutAddress(value: unknown): CheckoutAddress | null {
 
 export function CheckoutClient() {
   const router = useRouter();
-  const { cart, clearCart } = useStore();
+  const { cart } = useStore();
   const { user } = useSupabaseUser();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
@@ -70,6 +71,10 @@ export function CheckoutClient() {
     0,
   );
   const shipping = subtotal >= 50000 ? 0 : 3000;
+
+  useEffect(() => {
+    router.prefetch("/checkout/complete");
+  }, [router]);
 
   useEffect(() => {
     if (!user) {
@@ -101,8 +106,9 @@ export function CheckoutClient() {
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    clearCart();
-    router.push("/checkout/complete");
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    router.replace("/checkout/complete");
   };
 
   if (lines.length === 0) {
@@ -267,7 +273,9 @@ export function CheckoutClient() {
               <div><dt>배송비</dt><dd>{shipping === 0 ? "무료" : formatPrice(shipping)}</dd></div>
               <div className="summary-total"><dt>총 결제 금액</dt><dd>{formatPrice(subtotal + shipping)}</dd></div>
             </dl>
-            <button className="add-button" type="submit"><LockKey size={18} /> 데모 결제</button>
+            <button className="add-button" type="submit" disabled={isSubmitting} aria-busy={isSubmitting}>
+              <LockKey size={18} /> {isSubmitting ? "주문 완료 중" : "데모 결제"}
+            </button>
             <p>버튼을 누르면 주문 완료 화면으로 이동하며 정보는 저장되지 않습니다.</p>
           </aside>
         </form>
