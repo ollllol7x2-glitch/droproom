@@ -6892,6 +6892,7 @@ body:has(.admin-page) .site-footer {
 }
 
 .category-icon-link,
+.category-icon-link:nth-child(-n + 3),
 .category-icon-link:nth-child(3) {
   display: flex;
   min-width: 0;
