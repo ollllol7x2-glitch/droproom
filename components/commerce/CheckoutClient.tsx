@@ -306,10 +306,10 @@ export function CheckoutClient() {
           <aside className="checkout-summary">
             <h2>주문 상품</h2>
             <div className="checkout-products">
-              {lines.map(({ product, quantity }) => (
-                <div key={product.id}>
+              {lines.map(({ product, quantity, option }) => (
+                <div key={`${product.id}:${option ?? "default"}`}>
                   <div><Image src={assetPath(product.image)} alt="" fill sizes="70px" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></div>
-                  <p><strong>{product.name}</strong><span>{quantity}개</span></p>
+                  <p><strong>{product.name}</strong>{option && <small>옵션: {option}</small>}<span>{quantity}개</span></p>
                   <b>{formatPrice((product.salePrice ?? product.price) * quantity)}</b>
                 </div>
               ))}

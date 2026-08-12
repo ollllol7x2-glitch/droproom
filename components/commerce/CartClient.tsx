@@ -23,13 +23,13 @@ export function CartClient() {
       <header><p>SHOPPING BAG</p><h1>장바구니</h1><span>{lines.length}종의 상품</span></header>
       <div className="cart-layout">
         <div className="cart-lines">
-          {lines.map(({ product, quantity }) => (
-            <article className="cart-line" key={product.id}>
+          {lines.map(({ product, quantity, option }) => (
+            <article className="cart-line" key={`${product.id}:${option ?? "default"}`}>
               <Link className="cart-thumb" href={`/product/${product.slug}`}><Image src={assetPath(product.image)} alt="" fill sizes="160px" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></Link>
-              <div className="cart-line-info"><span>{product.brand}</span><Link href={`/product/${product.slug}`}><h2>{product.name}</h2></Link><strong>{formatPrice(product.salePrice ?? product.price)}</strong></div>
-              <div className="cart-quantity"><button type="button" aria-label="수량 줄이기" onClick={() => updateQuantity(product.id, quantity - 1)}><Minus size={14} /></button><output>{quantity}</output><button type="button" aria-label="수량 늘리기" onClick={() => updateQuantity(product.id, quantity + 1)}><Plus size={14} /></button></div>
+              <div className="cart-line-info"><span>{product.brand}</span><Link href={`/product/${product.slug}`}><h2>{product.name}</h2></Link>{option && <small>옵션: {option}</small>}<strong>{formatPrice(product.salePrice ?? product.price)}</strong></div>
+              <div className="cart-quantity"><button type="button" aria-label="수량 줄이기" onClick={() => updateQuantity(product.id, quantity - 1, option)}><Minus size={14} /></button><output>{quantity}</output><button type="button" aria-label="수량 늘리기" onClick={() => updateQuantity(product.id, quantity + 1, option)}><Plus size={14} /></button></div>
               <strong className="cart-line-total">{formatPrice((product.salePrice ?? product.price) * quantity)}</strong>
-              <button className="cart-remove" type="button" aria-label={`${product.name} 삭제`} onClick={() => removeFromCart(product.id)}><Trash size={18} /></button>
+              <button className="cart-remove" type="button" aria-label={`${product.name}${option ? ` ${option}` : ""} 삭제`} onClick={() => removeFromCart(product.id, option)}><Trash size={18} /></button>
             </article>
           ))}
         </div>

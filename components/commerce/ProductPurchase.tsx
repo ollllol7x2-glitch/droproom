@@ -9,11 +9,12 @@ import { formatPrice } from "@/lib/format";
 export function ProductPurchase({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(product.colors[0] ?? "");
   const { addToCart, toggleWishlist, isWishlisted } = useStore();
   const wishlisted = isWishlisted(product.id);
 
   const add = () => {
-    addToCart(product.id, quantity);
+    addToCart(product.id, quantity, selectedOption || undefined);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1400);
   };
@@ -29,7 +30,11 @@ export function ProductPurchase({ product }: { product: Product }) {
         <strong>{formatPrice(product.salePrice ?? product.price)}</strong>
       </div>
 
-      <div className="color-row"><span>색상</span><div>{product.colors.map((color, index) => <button key={color} className={index === 0 ? "active" : ""} type="button">{color}</button>)}</div></div>
+      {product.colors.length > 0 && <fieldset className="color-row">
+        <legend>색상</legend>
+        <div>{product.colors.map((color) => <button key={color} className={selectedOption === color ? "active" : ""} type="button" aria-pressed={selectedOption === color} onClick={() => { setSelectedOption(color); setAdded(false); }}>{color}</button>)}</div>
+        <p aria-live="polite">선택: <strong>{selectedOption}</strong></p>
+      </fieldset>}
 
       <div className="quantity-row">
         <span>수량</span>
@@ -41,7 +46,7 @@ export function ProductPurchase({ product }: { product: Product }) {
       </div>
 
       <div className="purchase-actions">
-        <button className="add-button" type="button" onClick={add}>{added ? <><Check size={18} /> 담았습니다</> : <><Bag size={18} /> 장바구니 담기</>}</button>
+        <button className="add-button" type="button" onClick={add}>{added ? <><Check size={18} /> {selectedOption ? `${selectedOption} 담았습니다` : "담았습니다"}</> : <><Bag size={18} /> 장바구니 담기</>}</button>
         <button className={`detail-wish ${wishlisted ? "active" : ""}`} type="button" aria-label={wishlisted ? "찜 해제" : "찜하기"} onClick={() => toggleWishlist(product.id)}><Heart size={21} weight={wishlisted ? "fill" : "regular"} /></button>
       </div>
 
