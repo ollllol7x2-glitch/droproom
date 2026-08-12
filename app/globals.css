@@ -2215,6 +2215,10 @@ img {
   padding-top: clamp(70px, 9vw, 120px);
 }
 
+.cart-page {
+  min-height: calc(100dvh - 70px);
+}
+
 .shop-heading,
 .utility-page > header,
 .cart-page > header,
@@ -3379,6 +3383,10 @@ img {
 
   .account-page {
     align-items: start;
+  }
+
+  .cart-page {
+    min-height: calc(100dvh - 64px);
   }
 }
 
