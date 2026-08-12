@@ -1,6 +1,13 @@
 "use client";
 
-import { LockKey } from "@phosphor-icons/react";
+import {
+  CheckCircle,
+  HouseLine,
+  LockKey,
+  MapPinLine,
+  PencilSimple,
+  Plus,
+} from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,6 +19,32 @@ import { getProductsByIds } from "@/data/products";
 import { assetPath } from "@/lib/assets";
 import { formatPrice } from "@/lib/format";
 
+type DeliveryMode = "saved" | "new";
+
+type CheckoutAddress = {
+  label: string;
+  recipient: string;
+  phone: string;
+  postcode: string;
+  address: string;
+  detail: string;
+};
+
+function readCheckoutAddress(value: unknown): CheckoutAddress | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const item = value as Record<string, unknown>;
+  if (typeof item.address !== "string" || !item.address) return null;
+
+  return {
+    label: typeof item.label === "string" && item.label ? item.label : "기본 배송지",
+    recipient: typeof item.recipient === "string" ? item.recipient : "",
+    phone: typeof item.phone === "string" ? item.phone : "",
+    postcode: typeof item.postcode === "string" ? item.postcode : "",
+    address: item.address,
+    detail: typeof item.detail === "string" ? item.detail : "",
+  };
+}
+
 export function CheckoutClient() {
   const router = useRouter();
   const { cart, clearCart } = useStore();
@@ -19,6 +52,8 @@ export function CheckoutClient() {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
+  const [deliveryMode, setDeliveryMode] = useState<DeliveryMode>("new");
+  const [savedDefaultAddress, setSavedDefaultAddress] = useState<CheckoutAddress | null>(null);
   const [postcode, setPostcode] = useState("");
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
@@ -37,7 +72,11 @@ export function CheckoutClient() {
   const shipping = subtotal >= 50000 ? 0 : 3000;
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setSavedDefaultAddress(null);
+      setDeliveryMode("new");
+      return;
+    }
 
     const profile = user.user_metadata.droproom_profile;
     if (profile && typeof profile === "object" && !Array.isArray(profile)) {
@@ -49,13 +88,15 @@ export function CheckoutClient() {
     setCustomerEmail(user.email || "");
 
     const savedAddresses = user.user_metadata.droproom_addresses;
-    if (!Array.isArray(savedAddresses)) return;
+    if (!Array.isArray(savedAddresses)) {
+      setSavedDefaultAddress(null);
+      setDeliveryMode("new");
+      return;
+    }
     const savedAddress = savedAddresses.find((item) => item?.isDefault === true) ?? savedAddresses[0];
-    if (!savedAddress || typeof savedAddress !== "object") return;
-
-    setPostcode(typeof savedAddress.postcode === "string" ? savedAddress.postcode : "");
-    setAddress(typeof savedAddress.address === "string" ? savedAddress.address : "");
-    setAddressDetail(typeof savedAddress.detail === "string" ? savedAddress.detail : "");
+    const parsedAddress = readCheckoutAddress(savedAddress);
+    setSavedDefaultAddress(parsedAddress);
+    setDeliveryMode(parsedAddress ? "saved" : "new");
   }, [user]);
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
@@ -99,28 +140,96 @@ export function CheckoutClient() {
 
             <section>
               <h2>배송지</h2>
-              <div className="form-grid">
-                <KakaoAddressFields
-                  idPrefix="checkout"
-                  postcode={postcode}
-                  address={address}
-                  onPostcodeChange={setPostcode}
-                  onAddressChange={setAddress}
-                  detailInputRef={addressDetailRef}
-                />
-                <label className="full" htmlFor="address-detail">
-                  <span>상세 주소</span>
-                  <input
-                    ref={addressDetailRef}
-                    id="address-detail"
-                    name="address-detail"
-                    required
-                    autoComplete="address-line2"
-                    placeholder="동·호수 등 상세 주소"
-                    value={addressDetail}
-                    onChange={(event) => setAddressDetail(event.target.value)}
+              <fieldset className="delivery-choice">
+                <legend>배송지 선택</legend>
+                <div>
+                  <label className={deliveryMode === "saved" ? "active" : ""}>
+                    <input
+                      type="radio"
+                      name="delivery-mode"
+                      value="saved"
+                      checked={deliveryMode === "saved"}
+                      disabled={!savedDefaultAddress}
+                      onChange={() => setDeliveryMode("saved")}
+                    />
+                    <span className="delivery-choice-icon"><HouseLine size={22} /></span>
+                    <span className="delivery-choice-copy">
+                      <strong>기본 배송지</strong>
+                      <small>{savedDefaultAddress ? savedDefaultAddress.label : "저장된 기본 배송지가 없어요"}</small>
+                    </span>
+                    {deliveryMode === "saved" && <CheckCircle className="delivery-choice-check" size={22} weight="fill" />}
+                  </label>
+
+                  <label className={deliveryMode === "new" ? "active" : ""}>
+                    <input
+                      type="radio"
+                      name="delivery-mode"
+                      value="new"
+                      checked={deliveryMode === "new"}
+                      onChange={() => setDeliveryMode("new")}
+                    />
+                    <span className="delivery-choice-icon"><Plus size={22} /></span>
+                    <span className="delivery-choice-copy">
+                      <strong>새 배송지</strong>
+                      <small>이번 주문에 사용할 주소를 입력해요</small>
+                    </span>
+                    {deliveryMode === "new" && <CheckCircle className="delivery-choice-check" size={22} weight="fill" />}
+                  </label>
+                </div>
+              </fieldset>
+
+              {deliveryMode === "saved" && savedDefaultAddress ? (
+                <div className="checkout-saved-address">
+                  <div className="checkout-saved-address-head">
+                    <span><MapPinLine size={21} /></span>
+                    <div>
+                      <strong>{savedDefaultAddress.label}</strong>
+                      <small>기본 배송지</small>
+                    </div>
+                    <Link href="/account"><PencilSimple size={18} /> 배송지 관리</Link>
+                  </div>
+                  <p>
+                    <strong>{savedDefaultAddress.recipient}</strong>
+                    <span>{savedDefaultAddress.phone}</span>
+                  </p>
+                  <address>
+                    <span>{savedDefaultAddress.postcode}</span>
+                    <strong>{savedDefaultAddress.address}</strong>
+                    {savedDefaultAddress.detail && <small>{savedDefaultAddress.detail}</small>}
+                  </address>
+                  <input type="hidden" name="postcode" value={savedDefaultAddress.postcode} />
+                  <input type="hidden" name="address" value={savedDefaultAddress.address} />
+                  <input type="hidden" name="address-detail" value={savedDefaultAddress.detail} />
+                  <input type="hidden" name="recipient" value={savedDefaultAddress.recipient} />
+                  <input type="hidden" name="recipient-phone" value={savedDefaultAddress.phone} />
+                </div>
+              ) : (
+                <div className="form-grid checkout-new-address">
+                  <KakaoAddressFields
+                    idPrefix="checkout"
+                    postcode={postcode}
+                    address={address}
+                    onPostcodeChange={setPostcode}
+                    onAddressChange={setAddress}
+                    detailInputRef={addressDetailRef}
                   />
-                </label>
+                  <label className="full" htmlFor="address-detail">
+                    <span>상세 주소</span>
+                    <input
+                      ref={addressDetailRef}
+                      id="address-detail"
+                      name="address-detail"
+                      required
+                      autoComplete="address-line2"
+                      placeholder="동·호수 등 상세 주소"
+                      value={addressDetail}
+                      onChange={(event) => setAddressDetail(event.target.value)}
+                    />
+                  </label>
+                </div>
+              )}
+
+              <div className="form-grid delivery-memo-grid">
                 <label className="full">
                   <span>배송 메모</span>
                   <select name="memo" defaultValue="문 앞에 놓아주세요">
