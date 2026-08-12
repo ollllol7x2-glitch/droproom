@@ -139,7 +139,7 @@ export function Header() {
               <Heart size={20} />
               {wishlist.length > 0 && <span className="count-badge">{wishlist.length}</span>}
             </Link>
-            <Link className="icon-button desktop-action" href="/account" aria-label="마이페이지">
+            <Link className="icon-button" href="/account" aria-label="로그인 또는 마이페이지">
               <UserCircle size={21} />
             </Link>
             <Link className="icon-button" href="/cart" aria-label={`장바구니 ${cartCount}개`}>
