@@ -84,8 +84,7 @@ export function Header() {
   };
 
   const goBack = () => {
-    const cameFromThisSite = document.referrer.startsWith(window.location.origin);
-    if (cameFromThisSite) {
+    if (window.history.length > 1) {
       router.back();
       return;
     }
