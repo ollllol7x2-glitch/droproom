@@ -35,6 +35,8 @@ const categoryIntroductions: Record<CategoryKey, { title: string; scene: string 
   },
 };
 
+const detailImagePositions = ["20% 60%", "80% 42%", "50% 24%", "28% 78%", "74% 74%"];
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const product = getProduct(slug);
@@ -59,8 +61,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <div className="detail-gallery">
           <div className="detail-main-image"><Image src={assetPath(product.image)} alt={`${product.name} 제품 이미지`} fill preload sizes="(max-width: 860px) 100vw, 55vw" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></div>
           <div className="detail-support-grid">
-            <div><Image src={assetPath(product.image)} alt={`${product.name} 소재와 형태 디테일`} fill sizes="30vw" style={{ objectFit: "cover", objectPosition: "20% 60%" }} /></div>
-            <div><Image src={assetPath(product.image)} alt={`${product.name} 사용 장면`} fill sizes="30vw" style={{ objectFit: "cover", objectPosition: "80% 42%" }} /></div>
+            {detailImagePositions.map((imagePosition, index) => (
+              <div key={imagePosition}>
+                <Image
+                  src={assetPath(product.image)}
+                  alt={`${product.name} ${index + 1}번째 디테일 이미지`}
+                  fill
+                  sizes="(max-width: 767px) 20vw, 12vw"
+                  style={{ objectFit: "cover", objectPosition: imagePosition }}
+                />
+              </div>
+            ))}
           </div>
         </div>
         <ProductPurchase product={product} />

@@ -573,6 +573,11 @@ img {
     gap: 6px;
   }
 
+  .header-actions {
+    grid-column: 3;
+    justify-self: end;
+  }
+
   .header-inner > .wordmark {
     justify-self: center;
   }
@@ -2544,7 +2549,7 @@ img {
 
 .detail-support-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
   margin-top: 12px;
 }
