@@ -1,8 +1,9 @@
-import { ArrowDownRight, ArrowRight, Check, Package, Sparkle } from "@phosphor-icons/react/dist/ssr";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, Clock, MapPin, Package, Phone, Sparkle, Subway } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { KakaoStoreMap } from "@/components/about/KakaoStoreMap";
 import { brandDirectory } from "@/data/products";
 import { assetPath } from "@/lib/assets";
 
@@ -107,6 +108,50 @@ export default function AboutPage() {
           </div>
           <div className="about-brand-directory" aria-label="입점 브랜드">
             {brandDirectory.map((brand) => <span key={brand.name}>{brand.name}</span>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="about-store" id="store-location">
+        <div className="shell about-store-inner">
+          <div className="about-store-heading">
+            <h2>대학로에서<br />직접 만나요.</h2>
+            <p>온라인에서 고른 취향을 오프라인에서 천천히 살펴보세요.</p>
+          </div>
+
+          <KakaoStoreMap />
+
+          <div className="about-store-details">
+            <div>
+              <MapPin size={25} weight="duotone" aria-hidden="true" />
+              <span>주소</span>
+              <strong>서울특별시 종로구 대학로11길 23<br />스타시티빌딩 2-4층</strong>
+              <small>지번: 명륜4가 113-1</small>
+            </div>
+            <div>
+              <Phone size={25} weight="duotone" aria-hidden="true" />
+              <span>전화번호</span>
+              <a href="tel:02-765-1326">02-765-1326</a>
+            </div>
+            <div>
+              <Clock size={25} weight="duotone" aria-hidden="true" />
+              <span>영업시간</span>
+              <strong className="about-store-open">영업 중 · 오후 6:00에 영업 종료</strong>
+            </div>
+            <div>
+              <Subway size={25} weight="duotone" aria-hidden="true" />
+              <span>찾아오는 길</span>
+              <strong>4호선 혜화역 1번 출구에서 도보 약 5분</strong>
+            </div>
+          </div>
+
+          <div className="about-store-actions">
+            <a href="https://map.kakao.com/link/map/DROP%20ROOM,37.5821092,127.0003792" target="_blank" rel="noreferrer">
+              카카오맵에서 보기 <ArrowUpRight size={19} weight="bold" />
+            </a>
+            <a href="https://map.kakao.com/link/to/DROP%20ROOM,37.5821092,127.0003792" target="_blank" rel="noreferrer">
+              길찾기 <ArrowRight size={19} weight="bold" />
+            </a>
           </div>
         </div>
       </section>

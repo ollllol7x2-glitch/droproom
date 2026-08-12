@@ -44,6 +44,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: https://ohztxpkoxsypydihtlja.supabase.co
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_1P2jzGAyH5s_TVsu4nuexQ_4L3MyQhm
           NEXT_PUBLIC_TOSS_CLIENT_KEY: test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm
+          NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY: d9d04b346fc22e775bd2bf9e34ccc8eb
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
