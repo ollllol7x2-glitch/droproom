@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart } from "@phosphor-icons/react";
+import { Check, Heart, ShoppingBag } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -62,8 +62,9 @@ export function ProductCard({ product }: { product: Product }) {
             {product.salePrice && <del>{formatPrice(product.price)}</del>}
             <strong>{formatPrice(price)}</strong>
           </div>
-          <button className="product-cart-button" type="button" onClick={add} aria-label={`${product.name} 장바구니 담기`}>
-            <span className="added-label">{added ? "담았어요" : "장바구니"}</span>
+          <button className={`product-cart-button ${added ? "added" : ""}`} type="button" onClick={add} aria-label={`${product.name} 장바구니 담기`}>
+            {added ? <Check size={17} weight="bold" aria-hidden="true" /> : <ShoppingBag size={17} aria-hidden="true" />}
+            <span className="added-label">{added ? "담았어요" : "담기"}</span>
           </button>
         </div>
       </div>

@@ -5619,7 +5619,7 @@ img {
   transform: rotate(-8deg) scale(1.06);
 }
 
-.product-price-row button:has(.added-label) {
+.product-price-row button.added {
   border-color: var(--accent);
   color: var(--accent-ink);
   background: var(--accent);
@@ -8687,30 +8687,42 @@ body:has(.admin-page) .site-footer {
 
 .product-price-row .product-cart-button {
   display: inline-flex;
-  min-width: 86px;
-  height: 42px;
+  min-width: 74px;
+  height: 40px;
   align-items: center;
   justify-content: center;
-  padding: 0 14px;
-  border: 0;
-  border-radius: 10px;
-  color: #ffffff;
-  background: #6531a8;
-  box-shadow: 0 8px 18px rgba(76, 31, 130, 0.18);
+  gap: 6px;
+  padding: 0 12px;
+  border: 1px solid color-mix(in srgb, #6531a8 48%, var(--line));
+  border-radius: 999px;
+  color: #6531a8;
+  background: transparent;
+  box-shadow: none;
   transform: none;
 }
 
 .product-price-row .product-cart-button:hover {
-  color: #ffffff;
-  background: #51238f;
-  transform: translateY(-2px);
+  color: #51238f;
+  background: color-mix(in srgb, #6531a8 9%, var(--bg));
+  transform: translateY(-1px);
 }
 
-.product-price-row .product-cart-button:has(.added-label) {
-  border: 0;
+.product-price-row .product-cart-button.added {
+  border-color: #6531a8;
   color: #ffffff;
   background: #6531a8;
   transform: none;
+}
+
+.product-price-row .product-cart-button.added:hover {
+  color: #ffffff;
+  background: #51238f;
+}
+
+.product-price-row strong {
+  font-size: 20px;
+  font-weight: 850;
+  letter-spacing: -0.02em;
 }
 
 .product-price-row .product-cart-button .added-label {
@@ -8796,9 +8808,9 @@ body:has(.admin-page) .site-footer {
   }
 
   .product-price-row .product-cart-button {
-    min-width: 78px;
+    min-width: 70px;
     height: 40px;
-    padding-inline: 11px;
+    padding-inline: 10px;
   }
 }
 
