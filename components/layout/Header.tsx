@@ -27,6 +27,12 @@ const navItems = [
 
 const mobileMenuPaths = new Set(["/", "/shop", "/about", "/terms", "/privacy", "/partner", "/admin"]);
 
+function normalizeMobilePath(pathname: string | null) {
+  if (!pathname) return null;
+  const withoutBasePath = pathname.replace(/^\/droproom(?=\/|$)/, "");
+  return withoutBasePath || "/";
+}
+
 export function Header() {
   const router = useRouter();
   const pathname = usePathname();
@@ -35,7 +41,8 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [theme, setTheme] = useState<"light" | "dark">("light");
-  const usesMobileBackButton = Boolean(pathname && !mobileMenuPaths.has(pathname));
+  const mobilePathname = normalizeMobilePath(pathname);
+  const usesMobileBackButton = Boolean(mobilePathname && !mobileMenuPaths.has(mobilePathname));
 
   useEffect(() => {
     const saved = window.localStorage.getItem("drop-room-theme");

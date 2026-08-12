@@ -17,15 +17,26 @@ export function ShopClient({ initialCategory, initialQuery = "", initialSort = "
   const [brand, setBrand] = useState<string>("all");
   const [query, setQuery] = useState(initialQuery);
   const [sort, setSort] = useState(initialSort);
+  const browseMode = initialSort === "new" || initialSort === "best" ? initialSort : "category";
+  const pageCopy = browseMode === "new"
+    ? { eyebrow: "JUST IN", title: "NEW ARRIVALS", description: "이번 주 새로 도착한 디자인 물건만 모았습니다. 가장 먼저 취향을 찾아보세요." }
+    : browseMode === "best"
+      ? { eyebrow: "MOST LOVED", title: "BEST PICKS", description: "지금 가장 많이 선택받는 물건을 카테고리와 브랜드를 넘어 한자리에 모았습니다." }
+      : { eyebrow: "CURATED GOODS", title: "ALL THINGS", description: "서로 다른 취향을 가진 12개 브랜드의 문구, 패션, 디지털과 리빙 제품을 한곳에서 고릅니다." };
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     const result = products.filter((product) => {
+      const matchesBrowseMode = browseMode === "new"
+        ? product.badges.includes("NEW")
+        : browseMode === "best"
+          ? product.badges.includes("BEST")
+          : true;
       const matchesCategory = category === "all" || product.category === category;
       const matchesBrand = brand === "all" || product.brand === brand;
       const matchesQuery = !normalized || `${product.name} ${product.brand} ${product.shortDescription}`.toLowerCase().includes(normalized);
       const matchesBudget = !initialMax || (product.salePrice ?? product.price) <= initialMax;
-      return matchesCategory && matchesBrand && matchesQuery && matchesBudget;
+      return matchesBrowseMode && matchesCategory && matchesBrand && matchesQuery && matchesBudget;
     });
 
     return result.sort((a, b) => {
@@ -35,16 +46,16 @@ export function ShopClient({ initialCategory, initialQuery = "", initialSort = "
       if (sort === "drop") return Number(b.badges.includes("DROP")) - Number(a.badges.includes("DROP"));
       return Number(b.badges.includes("NEW")) - Number(a.badges.includes("NEW"));
     });
-  }, [brand, category, query, sort, initialMax]);
+  }, [brand, browseMode, category, query, sort, initialMax]);
 
   const activeLabel = category === "all" ? "ALL THINGS" : categories.find((item) => item.key === category)?.label;
 
   return (
     <div className="shop-page shell">
       <header className="shop-heading">
-        <p>CURATED GOODS</p>
-        <h1>{activeLabel}</h1>
-        <span>서로 다른 취향을 가진 12개 브랜드의 문구, 패션, 디지털과 리빙 제품을 한곳에서 고릅니다.</span>
+        <p>{pageCopy.eyebrow}</p>
+        <h1>{category === "all" ? pageCopy.title : activeLabel}</h1>
+        <span>{pageCopy.description}</span>
       </header>
 
       <section className="brand-directory" aria-labelledby="brand-directory-title">
