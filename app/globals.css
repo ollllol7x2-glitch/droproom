@@ -9574,7 +9574,15 @@ main:has(
 
 .about-store-inner {
   display: grid;
-  gap: 44px;
+  grid-template-columns: minmax(390px, 0.82fr) minmax(0, 1.18fr);
+  align-items: start;
+  gap: clamp(44px, 6vw, 92px);
+}
+
+.about-store-info {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
 }
 
 .about-store-heading {
@@ -9598,7 +9606,7 @@ main:has(
 
 .about-store-map {
   position: relative;
-  min-height: clamp(440px, 53vw, 690px);
+  min-height: clamp(500px, 45vw, 560px);
   overflow: hidden;
   border: 1px solid #d8e0ee;
   border-radius: var(--radius-card);
@@ -9641,32 +9649,35 @@ main:has(
 
 .about-store-details {
   display: grid;
-  grid-template-columns: 1.45fr 0.75fr 1fr 1fr;
+  grid-template-columns: 1fr;
+  margin-top: clamp(42px, 5vw, 64px);
   border-top: 1px solid #c9d3e3;
   border-bottom: 1px solid #c9d3e3;
 }
 
 .about-store-details > div {
   display: grid;
+  grid-template-columns: 30px minmax(72px, 0.36fr) minmax(0, 1fr);
   align-content: start;
+  align-items: start;
   gap: 10px;
   min-width: 0;
-  padding: 30px 28px;
-  border-right: 1px solid #c9d3e3;
-}
-
-.about-store-details > div:first-child {
-  padding-left: 0;
+  padding: 18px 0;
+  border-bottom: 1px solid #c9d3e3;
 }
 
 .about-store-details > div:last-child {
-  padding-right: 0;
-  border-right: 0;
+  border-bottom: 0;
 }
 
 .about-store-details svg {
-  margin-bottom: 12px;
+  grid-row: 1 / span 2;
+  margin-top: 1px;
   color: #3157d5;
+}
+
+.about-store-details small {
+  grid-column: 3;
 }
 
 .about-store-details span,
@@ -9697,6 +9708,7 @@ main:has(
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  margin-top: 28px;
 }
 
 .about-store-actions a {
@@ -9725,20 +9737,32 @@ main:has(
 }
 
 @media (max-width: 1050px) {
+  .about-store-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .about-store-map {
+    min-height: clamp(420px, 62vw, 580px);
+  }
+
   .about-store-details {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .about-store-details > div:nth-child(2) {
+  .about-store-details > div {
+    grid-template-columns: 30px minmax(70px, 0.42fr) minmax(0, 1fr);
+    padding-right: 24px;
+    border-right: 1px solid #c9d3e3;
+  }
+
+  .about-store-details > div:nth-child(2n) {
+    padding-right: 0;
+    padding-left: 24px;
     border-right: 0;
   }
 
-  .about-store-details > div:nth-child(-n + 2) {
-    border-bottom: 1px solid #c9d3e3;
-  }
-
-  .about-store-details > div:nth-child(3) {
-    padding-left: 0;
+  .about-store-details > div:nth-last-child(-n + 2) {
+    border-bottom: 0;
   }
 }
 
@@ -9760,8 +9784,7 @@ main:has(
   }
 
   .about-store-map {
-    min-height: 112vw;
-    max-height: 520px;
+    min-height: min(112vw, 500px);
   }
 
   .about-store-details {

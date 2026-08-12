@@ -9,7 +9,7 @@ type KakaoMapSdk = {
   maps: {
     load: (callback: () => void) => void;
     LatLng: new (latitude: number, longitude: number) => KakaoLatLng;
-    Map: new (container: HTMLElement, options: { center: KakaoLatLng; level: number }) => {
+    Map: new (container: HTMLElement, options: { center: KakaoLatLng; level: number; scrollwheel?: boolean }) => {
       setCenter: (position: KakaoLatLng) => void;
       addControl: (control: object, position: unknown) => void;
     };
@@ -60,7 +60,11 @@ export function KakaoStoreMap() {
       initializedRef.current = true;
 
       const fallbackCenter = new kakao.maps.LatLng(FALLBACK_POSITION.latitude, FALLBACK_POSITION.longitude);
-      const map = new kakao.maps.Map(mapElementRef.current, { center: fallbackCenter, level: 3 });
+      const map = new kakao.maps.Map(mapElementRef.current, {
+        center: fallbackCenter,
+        level: 3,
+        scrollwheel: false,
+      });
 
       map.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
       map.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
