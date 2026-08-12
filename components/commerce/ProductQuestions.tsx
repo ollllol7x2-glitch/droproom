@@ -18,6 +18,7 @@ type ProductQuestion = {
   createdAt: string;
   updatedAt?: string;
   local?: boolean;
+  demo?: boolean;
 };
 
 type QuestionRow = {
@@ -36,6 +37,40 @@ type QuestionRow = {
 type QuestionDraft = { author: string; title: string; content: string; isPrivate: boolean };
 
 const emptyDraft: QuestionDraft = { author: "", title: "", content: "", isPrivate: false };
+
+function demoQuestions(productSlug: string, productName: string): ProductQuestion[] {
+  return [
+    {
+      id: `demo-${productSlug}-color`, userId: "demo", author: "소연", title: "실물 색상과 질감이 궁금해요",
+      content: `${productName}은 상세 이미지와 비교했을 때 실제 색상이나 표면 질감에 차이가 큰가요?`, isPrivate: false,
+      answer: "촬영 조명과 화면 설정에 따라 밝기는 조금 다르게 보일 수 있지만, 실제 색감에 가깝게 촬영했습니다. 자연광에서 보면 상세 이미지보다 질감이 조금 더 선명하게 느껴질 수 있어요.",
+      answeredAt: "2026-08-10T13:40:00+09:00", createdAt: "2026-08-10T10:18:00+09:00", demo: true,
+    },
+    {
+      id: `demo-${productSlug}-gift`, userId: "demo", author: "민지", title: "선물 포장도 같이 신청할 수 있나요?",
+      content: "친구 생일 선물로 주문하려고 해요. 가격표를 제외하고 포장해서 받을 수 있을까요?", isPrivate: false,
+      answer: "가능합니다. 주문서의 배송 메모에 ‘선물 포장 요청’과 ‘가격표 제거’를 남겨주세요. 상품 크기에 맞는 포장으로 준비해 드립니다.",
+      answeredAt: "2026-08-09T16:05:00+09:00", createdAt: "2026-08-09T14:22:00+09:00", demo: true,
+    },
+    {
+      id: `demo-${productSlug}-option`, userId: "demo", author: "하윤", title: "옵션별로 여러 개를 한 번에 주문할 수 있나요?",
+      content: "서로 다른 옵션을 하나씩 담고 싶은데 옵션마다 수량을 따로 선택할 수 있는지 궁금합니다.", isPrivate: false,
+      answer: "상품 상단에서 옵션과 수량을 선택한 뒤 ‘선택 추가’를 눌러 주세요. 다른 옵션도 같은 방식으로 추가하면 옵션별 수량을 확인하고 한 번에 장바구니에 담을 수 있습니다.",
+      answeredAt: "2026-08-08T11:32:00+09:00", createdAt: "2026-08-08T09:47:00+09:00", demo: true,
+    },
+    {
+      id: `demo-${productSlug}-delivery`, userId: "demo", author: "준호", title: "오늘 주문하면 언제 출고되나요?",
+      content: "주말 전에 받아야 해서요. 평일 오후에 주문해도 당일 출고가 가능한가요?", isPrivate: false,
+      answer: "평일 오후 2시 이전 결제 완료 주문은 재고 확인 후 당일 또는 다음 영업일에 출고됩니다. 정확한 도착일은 택배사 사정과 지역에 따라 달라질 수 있어요.",
+      answeredAt: "2026-08-07T15:10:00+09:00", createdAt: "2026-08-07T13:26:00+09:00", demo: true,
+    },
+    {
+      id: `demo-${productSlug}-restock`, userId: "demo", author: "지우", title: "품절 옵션 재입고 일정이 있나요?",
+      content: "원하는 옵션이 품절로 보여요. 이번 달 안에 다시 입고될 예정인지 알고 싶습니다.", isPrivate: false,
+      createdAt: "2026-08-11T18:35:00+09:00", demo: true,
+    },
+  ];
+}
 
 function userDisplayName(user: User | null) {
   if (!user) return "";
@@ -103,7 +138,7 @@ export function ProductQuestions({ productSlug, productName }: { productSlug: st
     setReady(false);
     setError("");
     if (!isSupabaseConfigured) {
-      setQuestions(readLocalQuestions(productSlug));
+      setQuestions([...readLocalQuestions(productSlug), ...demoQuestions(productSlug, productName)]);
       setOfflineMode(true);
       setReady(true);
       return;
@@ -116,21 +151,21 @@ export function ProductQuestions({ productSlug, productName }: { productSlug: st
       .order("created_at", { ascending: false });
 
     if (loadError) {
-      setQuestions(readLocalQuestions(productSlug));
+      setQuestions([...readLocalQuestions(productSlug), ...demoQuestions(productSlug, productName)]);
       setOfflineMode(true);
       setError("공용 Q&A를 불러오지 못해 이 브라우저에 저장된 질문을 표시합니다.");
     } else {
-      setQuestions((data as QuestionRow[]).map(mapRow));
+      setQuestions([...(data as QuestionRow[]).map(mapRow), ...demoQuestions(productSlug, productName)]);
       setOfflineMode(false);
     }
     setReady(true);
-  }, [productSlug]);
+  }, [productName, productSlug]);
 
   useEffect(() => { void loadQuestions(); }, [loadQuestions]);
 
   useEffect(() => {
     if (!ready || !offlineMode) return;
-    window.localStorage.setItem(localKey(productSlug), JSON.stringify(questions));
+    window.localStorage.setItem(localKey(productSlug), JSON.stringify(questions.filter((question) => !question.demo)));
   }, [offlineMode, productSlug, questions, ready]);
 
   useEffect(() => {
@@ -179,7 +214,7 @@ export function ProductQuestions({ productSlug, productName }: { productSlug: st
       : value.content.trim().length < 5
         ? "질문 내용을 5자 이상 입력해 주세요."
         : "";
-  const canManage = (question: ProductQuestion) => question.local || Boolean(user && question.userId === user.id);
+  const canManage = (question: ProductQuestion) => !question.demo && (question.local || Boolean(user && question.userId === user.id));
 
   const requestLogin = () => void signInWithGoogle(`/product/${productSlug}/#question-form`);
   const openQuestionForm = () => { setError(""); setMessage(""); setQuestionFormOpen(true); };
