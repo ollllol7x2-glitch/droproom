@@ -28,6 +28,7 @@ export function Footer() {
           <Link href="/">이용약관</Link>
           <Link href="/">개인정보처리방침</Link>
           <Link href="/">입점 문의</Link>
+          <Link href="/admin">관리자센터</Link>
         </div>
         <span>© DROP ROOM. Demo store.</span>
       </div>
