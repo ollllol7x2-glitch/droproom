@@ -102,8 +102,8 @@ export default function AboutPage() {
       <section className="about-brands">
         <div className="shell about-brands-layout">
           <div className="about-section-heading">
-            <h2>하나의 브랜드처럼 보이지 않도록</h2>
-            <p>서로 다른 목소리와 색을 가진 디자인 브랜드를 한곳에서 만납니다.</p>
+            <h2>취향은 하나로 정해지지 않으니까</h2>
+            <p>서로 다른 브랜드를 둘러보며 지금 마음에 드는 물건을 발견해 보세요.</p>
           </div>
           <div className="about-brand-directory" aria-label="입점 브랜드">
             {brandDirectory.map((brand) => <span key={brand.name}>{brand.name}</span>)}
