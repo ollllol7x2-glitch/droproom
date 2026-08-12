@@ -26,9 +26,9 @@ export function Footer() {
       <div className="shell footer-bottom">
         <div>
           <Link href="/about">쇼핑몰 소개</Link>
-          <Link href="/">이용약관</Link>
-          <Link href="/">개인정보처리방침</Link>
-          <Link href="/">입점 문의</Link>
+          <Link href="/terms">이용약관</Link>
+          <Link href="/privacy">개인정보처리방침</Link>
+          <Link href="/partner">입점 문의</Link>
           <Link href="/admin">관리자센터</Link>
         </div>
         <span>© DROP ROOM. Demo store.</span>
