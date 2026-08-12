@@ -2641,6 +2641,10 @@ img {
 }
 
 .color-row button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   min-height: 40px;
   padding: 0 14px;
   border: 1px solid var(--line);
@@ -2671,14 +2675,164 @@ img {
   transform: scale(0.98);
 }
 
-.color-row > p {
-  margin: 1px 0 0;
-  color: var(--muted);
-  font-size: 16px;
+.selected-options {
+  margin-top: 24px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, #6531a8 20%, var(--line));
+  border-radius: 18px;
+  background: color-mix(in srgb, #6531a8 4%, var(--surface));
 }
 
-.color-row > p strong {
+.selected-options-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.selected-options-header strong {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.selected-options-header span {
+  color: #6531a8;
+  font-size: 15px;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.selected-option-list {
+  display: grid;
+}
+
+.selected-option-row {
+  display: grid;
+  grid-template-columns: minmax(92px, 1fr) auto minmax(88px, auto) 30px;
+  align-items: center;
+  gap: 14px;
+  min-height: 82px;
+  padding: 14px 16px 14px 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.selected-option-name {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.selected-option-name small {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.selected-option-name strong {
+  overflow: hidden;
+  font-size: 16px;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.option-quantity {
+  display: grid;
+  grid-template-columns: 34px 36px 34px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+}
+
+.option-quantity button,
+.option-quantity output {
+  display: grid;
+  place-items: center;
+  height: 36px;
+}
+
+.option-quantity button {
+  padding: 0;
+  border: 0;
   color: var(--text);
+  background: transparent;
+  cursor: pointer;
+}
+
+.option-quantity button:disabled {
+  color: color-mix(in srgb, var(--muted) 45%, transparent);
+  cursor: not-allowed;
+}
+
+.option-quantity button:not(:disabled):active {
+  background: color-mix(in srgb, #6531a8 9%, transparent);
+}
+
+.option-quantity output {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.selected-option-price {
+  font-size: 16px;
+  line-height: 1.4;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.selected-option-remove {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.selected-option-remove:hover {
+  color: var(--text);
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+}
+
+.selected-option-remove:active {
+  transform: scale(0.94);
+}
+
+.selected-options-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 14px;
+  padding: 18px;
+  background: color-mix(in srgb, #6531a8 7%, var(--surface));
+}
+
+.selected-options-total span {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.selected-options-total strong {
+  color: #6531a8;
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.selected-options-empty {
+  margin: 0;
+  padding: 25px 18px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.55;
+  text-align: center;
 }
 
 .quantity-row > div,
@@ -2739,6 +2893,36 @@ img {
 
 .purchase-actions .add-button:active {
   transform: scale(0.98);
+}
+
+.purchase-actions .add-button:disabled {
+  color: var(--muted);
+  background: color-mix(in srgb, var(--muted) 16%, var(--surface));
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 520px) {
+  .selected-option-row {
+    grid-template-columns: minmax(84px, 1fr) auto 30px;
+    gap: 10px;
+  }
+
+  .selected-option-price {
+    grid-column: 1 / 3;
+    grid-row: 2;
+    text-align: left;
+  }
+
+  .selected-option-remove {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .option-quantity {
+    grid-column: 2;
+  }
 }
 
 .detail-wish {
