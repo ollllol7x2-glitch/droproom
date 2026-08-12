@@ -67,7 +67,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
         <ProductPurchase product={product} />
       </div>
-      <section className="shell product-introduction" aria-labelledby="product-introduction-title">
+      <nav className="product-detail-tabs" aria-label="상품 상세 메뉴">
+        <div className="shell product-detail-tabs-inner">
+          <a href="#product-introduction">상품 소개</a>
+          <a href="#product-reviews">리뷰</a>
+          <a href="#related-products">관련 상품</a>
+        </div>
+      </nav>
+      <section className="shell product-introduction" id="product-introduction" aria-labelledby="product-introduction-title">
         <div className="product-introduction-heading">
           <p>PRODUCT INTRODUCTION</p>
           <h2 id="product-introduction-title">{introduction.title}</h2>
@@ -101,7 +108,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
       <ProductReviews productSlug={product.slug} productName={product.name} />
-      {related.length > 0 && <section className="shell related-section"><div className="product-section-head"><div><h2>같이 두기 좋은 물건</h2><p>같은 카테고리에서 함께 고른 제품입니다.</p></div></div><ProductGrid items={related} /></section>}
+      <section className="shell related-section" id="related-products" aria-labelledby="related-products-title">
+        <div className="product-section-head">
+          <div>
+            <h2 id="related-products-title">같이 두기 좋은 물건</h2>
+            <p>같은 카테고리에서 함께 고른 제품입니다.</p>
+          </div>
+        </div>
+        {related.length > 0 ? <ProductGrid items={related} /> : <p className="related-empty">현재 함께 추천할 상품을 준비하고 있습니다.</p>}
+      </section>
     </div>
   );
 }
