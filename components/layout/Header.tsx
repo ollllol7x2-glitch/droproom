@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowLeft,
   Bag,
   Heart,
   List,
@@ -11,7 +12,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { useStore } from "@/components/commerce/StoreProvider";
@@ -26,11 +27,13 @@ const navItems = [
 
 export function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const { cartCount, wishlist } = useStore();
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const isProductDetail = pathname?.startsWith("/product/");
 
   useEffect(() => {
     const saved = window.localStorage.getItem("drop-room-theme");
@@ -70,18 +73,38 @@ export function Header() {
     setSearchOpen(false);
   };
 
+  const goBackFromProduct = () => {
+    const cameFromThisSite = document.referrer.startsWith(window.location.origin);
+    if (cameFromThisSite) {
+      router.back();
+      return;
+    }
+    router.push("/shop");
+  };
+
   return (
     <>
       <header className="site-header">
         <div className="shell header-inner">
-          <button
-            className="icon-button mobile-only"
-            type="button"
-            aria-label="전체 메뉴 열기"
-            onClick={() => setMenuOpen(true)}
-          >
-            <List size={22} weight="regular" />
-          </button>
+          {isProductDetail ? (
+            <button
+              className="icon-button detail-header-back"
+              type="button"
+              aria-label="이전 페이지로"
+              onClick={goBackFromProduct}
+            >
+              <ArrowLeft size={23} weight="regular" />
+            </button>
+          ) : (
+            <button
+              className="icon-button mobile-only"
+              type="button"
+              aria-label="전체 메뉴 열기"
+              onClick={() => setMenuOpen(true)}
+            >
+              <List size={22} weight="regular" />
+            </button>
+          )}
 
           <Link className="brand-home-link" href="/" aria-label="DROP ROOM 홈">
             <BrandLogo variant="header" />

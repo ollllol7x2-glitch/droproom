@@ -299,6 +299,10 @@ img {
   display: none;
 }
 
+.detail-header-back {
+  display: none;
+}
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -580,6 +584,14 @@ img {
 
   .mobile-only {
     display: inline-grid;
+  }
+
+  .detail-header-back {
+    display: inline-grid;
+  }
+
+  .detail-header-back + .brand-home-link {
+    display: none;
   }
 
   .service-grid {
@@ -5397,7 +5409,7 @@ img {
   }
 
   .detail-page {
-    padding-top: 18px;
+    padding-top: 0;
   }
 
   .detail-grid {
@@ -9074,6 +9086,31 @@ body:has(.admin-page) .site-footer {
 @media (max-width: 767px) {
   .product-rail-nav {
     display: none;
+  }
+
+  /* Detail images lead the mobile page, while the buying controls keep the shell inset. */
+  .detail-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .detail-gallery {
+    width: calc(100% + 32px);
+    margin-left: -16px;
+  }
+
+  .detail-main-image {
+    aspect-ratio: 1;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  .detail-support-grid {
+    gap: 4px;
+    margin-top: 4px;
+  }
+
+  .detail-support-grid > div {
+    border-radius: 0;
   }
 
   .product-detail-tabs {

@@ -1,7 +1,5 @@
-import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductGrid } from "@/components/commerce/ProductGrid";
 import { ProductPurchase } from "@/components/commerce/ProductPurchase";
@@ -57,7 +55,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <div className="detail-page">
-      <div className="shell back-row"><Link href="/shop"><ArrowLeft size={17} /> 상품 목록</Link></div>
       <div className="shell detail-grid">
         <div className="detail-gallery">
           <div className="detail-main-image"><Image src={assetPath(product.image)} alt={`${product.name} 제품 이미지`} fill preload sizes="(max-width: 860px) 100vw, 55vw" style={{ objectFit: "cover", objectPosition: product.imagePosition }} /></div>
