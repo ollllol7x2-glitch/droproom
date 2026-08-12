@@ -78,7 +78,8 @@ export function CheckoutClient() {
     (sum, line) => sum + (line.product.salePrice ?? line.product.price) * line.quantity,
     0,
   );
-  const shipping = subtotal >= 50000 ? 0 : 3000;
+  const isPaymentTestOrder = lines.length > 0 && lines.every((line) => line.product.isPaymentTest);
+  const shipping = isPaymentTestOrder || subtotal >= 50000 ? 0 : 3000;
 
   useEffect(() => {
     if (!user) {

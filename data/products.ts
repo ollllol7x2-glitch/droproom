@@ -21,6 +21,7 @@ export type Product = {
   curatorNote: string;
   colors: string[];
   stockStatus: "in_stock" | "low_stock" | "sold_out";
+  isPaymentTest?: boolean;
 };
 
 export const brandDirectory = [
@@ -97,6 +98,22 @@ export const categories: {
 ];
 
 export const products: Product[] = [
+  {
+    id: "p19",
+    slug: "one-thousand-won-test-sticker",
+    name: "1,000원 테스트 결제 스티커",
+    brand: "OFFSET CLUB",
+    category: "stationery",
+    price: 1000,
+    image: "/images/products-v4/one-thousand-won-test-sticker.jpg",
+    imagePosition: "center",
+    badges: ["NEW"],
+    shortDescription: "토스페이먼츠 테스트 결제를 1,000원으로 확인하는 미니 스티커",
+    curatorNote: "결제 수단 선택부터 테스트 승인 화면까지 쇼핑 흐름을 가볍게 확인할 수 있도록 만든 전용 상품입니다. 테스트 키를 사용해 실제 금액은 청구되지 않습니다.",
+    colors: ["Lime", "Coral", "Cobalt"],
+    stockStatus: "in_stock",
+    isPaymentTest: true,
+  },
   {
     id: "p01",
     slug: "cobalt-spiral-note",
