@@ -2870,18 +2870,21 @@ img {
   font-size: 18px;
 }
 
-.product-reviews-heading > a {
+.product-reviews-heading > button {
   display: inline-flex;
   min-height: 48px;
   align-items: center;
   justify-content: center;
   padding: 0 20px;
+  border: 0;
   border-radius: 999px;
-  color: #171719;
-  background: var(--accent);
+  color: #fff;
+  background: #6531a8;
   font-size: 16px;
   font-weight: 800;
   white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(101, 49, 168, 0.2);
 }
 
 .product-reviews-layout {
@@ -2966,6 +2969,31 @@ img {
 
 .review-content {
   min-width: 0;
+}
+
+.review-list-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 20px;
+}
+
+.review-list-heading h3 {
+  margin: 0;
+  font-size: clamp(24px, 2.2vw, 32px);
+  letter-spacing: -0.04em;
+}
+
+.review-list-heading span {
+  display: grid;
+  min-width: 29px;
+  height: 29px;
+  place-items: center;
+  border-radius: 999px;
+  color: #fff;
+  background: #6531a8;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .review-form {
@@ -3148,8 +3176,11 @@ img {
 }
 
 .review-feedback {
-  min-height: 42px;
-  padding: 12px 2px 0;
+  padding: 0 2px 16px;
+}
+
+.review-feedback:empty {
+  display: none;
 }
 
 .review-feedback p {
@@ -3305,13 +3336,110 @@ img {
   line-height: 1.6;
 }
 
+.review-write-overlay {
+  position: fixed;
+  z-index: 90;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(23, 23, 25, 0.48);
+  backdrop-filter: blur(5px);
+}
+
+.review-write-dialog {
+  width: min(100%, 720px);
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  padding: clamp(28px, 4vw, 44px);
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background: var(--bg);
+  box-shadow: 0 28px 80px rgba(23, 23, 25, 0.25);
+  overscroll-behavior: contain;
+}
+
+.review-write-dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid var(--line);
+}
+
+.review-write-dialog-head span {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+}
+
+.review-write-dialog-head h3 {
+  margin: 0;
+  font-size: clamp(36px, 4vw, 52px);
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.review-write-dialog-head p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.review-write-dialog-head > button {
+  display: grid;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--text);
+  background: var(--bg);
+  cursor: pointer;
+}
+
+.review-write-dialog .review-form,
+.review-write-dialog .review-login-prompt {
+  margin-top: 25px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.review-write-dialog .review-login-prompt {
+  min-height: 180px;
+}
+
+.review-write-dialog .review-form-heading p {
+  margin-top: 0;
+}
+
+.review-write-dialog .review-submit-button {
+  width: 100%;
+  border-color: #6531a8;
+  background: #6531a8;
+}
+
+.review-modal-error {
+  margin: 16px 0 0;
+  color: #b42318;
+  font-size: 16px;
+  font-weight: 700;
+}
+
 @media (max-width: 560px) {
   .product-reviews-heading {
     align-items: flex-start;
     flex-direction: column;
   }
 
-  .product-reviews-heading > a {
+  .product-reviews-heading > button {
     width: 100%;
   }
 
@@ -4121,6 +4249,49 @@ img {
 }
 
 @media (max-width: 767px) {
+  .review-write-overlay {
+    display: block;
+    padding: 0;
+    background: var(--bg);
+    backdrop-filter: none;
+  }
+
+  .review-write-dialog {
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    padding: max(24px, env(safe-area-inset-top)) 18px max(28px, env(safe-area-inset-bottom));
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .review-write-dialog-head {
+    position: sticky;
+    z-index: 1;
+    top: calc(-1 * max(24px, env(safe-area-inset-top)));
+    margin: calc(-1 * max(24px, env(safe-area-inset-top))) -18px 0;
+    padding: max(24px, env(safe-area-inset-top)) 18px 20px;
+    background: var(--bg);
+  }
+
+  .review-write-dialog-head h3 {
+    font-size: 40px;
+  }
+
+  .review-write-dialog .review-login-prompt {
+    min-height: calc(100dvh - 230px);
+    justify-content: center;
+  }
+
+  .review-write-dialog .review-form-fields textarea {
+    min-height: 190px;
+  }
+
+  .review-write-dialog .review-submit-button {
+    min-height: 54px;
+  }
+
   .shop-page,
   .utility-page,
   .cart-page,

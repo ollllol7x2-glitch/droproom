@@ -2,7 +2,7 @@
 
 import { Check, PencilSimple, Star, Trash, X } from "@phosphor-icons/react";
 import type { User } from "@supabase/supabase-js";
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSupabaseUser } from "@/components/auth/useSupabaseUser";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 
@@ -87,6 +87,9 @@ export function ProductReviews({ productSlug, productName }: { productSlug: stri
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [reviewFormOpen, setReviewFormOpen] = useState(false);
+  const reviewButtonRef = useRef<HTMLButtonElement>(null);
+  const reviewDialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user && !draft.author) setDraft((current) => ({ ...current, author: userDisplayName(user) }));
@@ -126,12 +129,57 @@ export function ProductReviews({ productSlug, productName }: { productSlug: stri
     window.localStorage.setItem(localKey(productSlug), JSON.stringify(reviews));
   }, [offlineMode, productSlug, ready, reviews]);
 
+  useEffect(() => {
+    if (window.location.hash === "#review-form") setReviewFormOpen(true);
+  }, []);
+
+  useEffect(() => {
+    if (!reviewFormOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.setTimeout(() => reviewDialogRef.current?.querySelector<HTMLElement>("[data-review-initial-focus]")?.focus(), 0);
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !saving) {
+        setReviewFormOpen(false);
+        window.setTimeout(() => reviewButtonRef.current?.focus(), 0);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = reviewDialogRef.current?.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusable?.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [reviewFormOpen, saving]);
+
   const average = useMemo(() => reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0, [reviews]);
   const distribution = useMemo(() => [5, 4, 3, 2, 1].map((rating) => ({ rating, count: reviews.filter((review) => review.rating === rating).length })), [reviews]);
   const validate = (value: ReviewDraft) => !value.author.trim() ? "작성자 이름을 입력해 주세요." : value.content.trim().length < 5 ? "리뷰를 5자 이상 입력해 주세요." : "";
   const canManage = (review: ProductReview) => review.local || Boolean(user && review.userId === user.id);
 
   const requestLogin = () => void signInWithGoogle(`/product/${productSlug}/#review-form`);
+  const openReviewForm = () => { setError(""); setMessage(""); setReviewFormOpen(true); };
+  const closeReviewForm = () => {
+    if (saving) return;
+    setReviewFormOpen(false);
+    window.setTimeout(() => reviewButtonRef.current?.focus(), 0);
+  };
 
   const addReview = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -149,7 +197,8 @@ export function ProductReviews({ productSlug, productName }: { productSlug: stri
       setReviews((current) => [mapRow(data as ReviewRow), ...current]);
     }
     setDraft({ author: userDisplayName(user), rating: 5, content: "" });
-    setError(""); setMessage("리뷰가 등록되었습니다."); setSaving(false);
+    setError(""); setMessage("리뷰가 등록되었습니다."); setSaving(false); setReviewFormOpen(false);
+    window.setTimeout(() => reviewButtonRef.current?.focus(), 0);
   };
 
   const startEditing = (review: ProductReview) => { setEditingId(review.id); setEditingDraft({ author: review.author, rating: review.rating, content: review.content }); setDeletingId(null); setMessage(""); setError(""); };
@@ -183,14 +232,36 @@ export function ProductReviews({ productSlug, productName }: { productSlug: stri
   };
 
   return <section className="shell product-reviews" id="product-reviews" aria-labelledby="product-reviews-title">
-    <div className="product-reviews-heading"><div><h2 id="product-reviews-title">사용자 리뷰</h2><p>{productName}을 사용한 경험을 나눠주세요.</p></div><a href="#review-form">리뷰 작성</a></div>
+    <div className="product-reviews-heading">
+      <div><h2 id="product-reviews-title">사용자 리뷰</h2><p>{productName}을 사용한 경험을 확인해 보세요.</p></div>
+      <button ref={reviewButtonRef} type="button" onClick={openReviewForm}>리뷰 쓰기</button>
+    </div>
     <div className="product-reviews-layout">
-      <aside className="review-summary" aria-label="리뷰 평점 요약"><span>평균 평점</span><strong>{reviews.length ? average.toFixed(1) : "0.0"}</strong><div className="review-summary-stars" aria-label={`5점 만점에 ${average.toFixed(1)}점`}>{[1, 2, 3, 4, 5].map((rating) => <Star key={rating} size={20} weight={rating <= Math.round(average) ? "fill" : "regular"} />)}</div><p>{reviews.length}개의 리뷰</p><div className="review-distribution">{distribution.map(({ rating, count }) => <div key={rating}><span>{rating}점</span><div aria-hidden="true"><i style={{ width: reviews.length ? `${(count / reviews.length) * 100}%` : "0%" }} /></div><small>{count}</small></div>)}</div></aside>
+      <aside className="review-summary" aria-label="리뷰 평점 요약">
+        <span>평균 평점</span><strong>{reviews.length ? average.toFixed(1) : "0.0"}</strong>
+        <div className="review-summary-stars" aria-label={`5점 만점에 ${average.toFixed(1)}점`}>{[1, 2, 3, 4, 5].map((rating) => <Star key={rating} size={20} weight={rating <= Math.round(average) ? "fill" : "regular"} />)}</div>
+        <p>{reviews.length}개의 리뷰</p>
+        <div className="review-distribution">{distribution.map(({ rating, count }) => <div key={rating}><span>{rating}점</span><div aria-hidden="true"><i style={{ width: reviews.length ? `${(count / reviews.length) * 100}%` : "0%" }} /></div><small>{count}</small></div>)}</div>
+      </aside>
       <div className="review-content">
-        {configured && !authLoading && !user && !offlineMode ? <div className="review-login-prompt" id="review-form"><div><h3>로그인하고 리뷰를 남겨보세요.</h3><p>Google 계정으로 작성하면 다른 사용자에게도 리뷰가 공개됩니다.</p></div><button type="button" onClick={requestLogin}>Google 로그인</button></div> : <form className="review-form" id="review-form" onSubmit={addReview}><div className="review-form-heading"><h3>리뷰 작성</h3><p>{offlineMode ? "현재 리뷰는 이 브라우저에 저장됩니다." : "작성한 리뷰는 모든 사용자에게 공개됩니다."}</p></div><StarSelector value={draft.rating} onChange={(rating) => setDraft((current) => ({ ...current, rating }))} label="새 리뷰 별점" /><div className="review-form-fields"><label><span>작성자</span><input value={draft.author} maxLength={20} autoComplete="name" onChange={(event) => setDraft((current) => ({ ...current, author: event.target.value }))} /></label><label><span>리뷰 내용</span><textarea value={draft.content} rows={5} maxLength={500} onChange={(event) => setDraft((current) => ({ ...current, content: event.target.value }))} /><small>{draft.content.length}/500</small></label></div><button className="review-submit-button" type="submit" disabled={saving}><Check size={19} weight="bold" /> {saving ? "등록 중" : "리뷰 등록"}</button></form>}
+        <div className="review-list-heading"><h3>등록된 리뷰</h3><span>{reviews.length}</span></div>
         <div className="review-feedback" aria-live="polite">{error && <p className="review-error" role="alert">{error}</p>}{message && <p>{message}</p>}</div>
-        <div className="review-list" aria-busy={!ready}>{!ready && <div className="review-empty"><p>리뷰를 불러오고 있습니다.</p></div>}{ready && !reviews.length && <div className="review-empty"><Star size={30} /><h3>아직 등록된 리뷰가 없어요.</h3><p>이 상품을 먼저 사용해 본 경험을 남겨주세요.</p></div>}{ready && reviews.map((review) => <article className="review-item" key={review.id}>{editingId === review.id ? <form className="review-edit-form" onSubmit={updateReview}><StarSelector value={editingDraft.rating} onChange={(rating) => setEditingDraft((current) => ({ ...current, rating }))} label="수정할 리뷰 별점" /><label><span>작성자</span><input value={editingDraft.author} maxLength={20} onChange={(event) => setEditingDraft((current) => ({ ...current, author: event.target.value }))} /></label><label><span>리뷰 내용</span><textarea value={editingDraft.content} rows={4} maxLength={500} onChange={(event) => setEditingDraft((current) => ({ ...current, content: event.target.value }))} /></label><div><button type="submit" disabled={saving}><Check size={18} weight="bold" /> 수정 완료</button><button type="button" onClick={() => setEditingId(null)}><X size={18} /> 취소</button></div></form> : <><header><div><strong>{review.author}</strong><span>{formatDate(review.createdAt)}{review.updatedAt ? " 수정됨" : ""}</span></div><div className="review-item-stars" aria-label={`5점 만점에 ${review.rating}점`}>{[1, 2, 3, 4, 5].map((rating) => <Star key={rating} size={18} weight={rating <= review.rating ? "fill" : "regular"} />)}</div></header><p>{review.content}</p>{canManage(review) && (deletingId === review.id ? <div className="review-delete-confirm" role="alert"><span>이 리뷰를 삭제할까요?</span><button type="button" disabled={saving} onClick={() => void deleteReview(review)}>삭제</button><button type="button" onClick={() => setDeletingId(null)}>취소</button></div> : <div className="review-item-actions"><button type="button" onClick={() => startEditing(review)}><PencilSimple size={17} /> 수정</button><button type="button" onClick={() => setDeletingId(review.id)}><Trash size={17} /> 삭제</button></div>)}</>}</article>)}</div>
+        <div className="review-list" aria-busy={!ready}>
+          {!ready && <div className="review-empty"><p>리뷰를 불러오고 있습니다.</p></div>}
+          {ready && !reviews.length && <div className="review-empty"><Star size={30} /><h3>아직 등록된 리뷰가 없어요.</h3><p>이 상품을 먼저 사용해 본 경험을 남겨주세요.</p></div>}
+          {ready && reviews.map((review) => <article className="review-item" key={review.id}>{editingId === review.id ? <form className="review-edit-form" onSubmit={updateReview}><StarSelector value={editingDraft.rating} onChange={(rating) => setEditingDraft((current) => ({ ...current, rating }))} label="수정할 리뷰 별점" /><label><span>작성자</span><input value={editingDraft.author} maxLength={20} onChange={(event) => setEditingDraft((current) => ({ ...current, author: event.target.value }))} /></label><label><span>리뷰 내용</span><textarea value={editingDraft.content} rows={4} maxLength={500} onChange={(event) => setEditingDraft((current) => ({ ...current, content: event.target.value }))} /></label><div><button type="submit" disabled={saving}><Check size={18} weight="bold" /> 수정 완료</button><button type="button" onClick={() => setEditingId(null)}><X size={18} /> 취소</button></div></form> : <><header><div><strong>{review.author}</strong><span>{formatDate(review.createdAt)}{review.updatedAt ? " 수정됨" : ""}</span></div><div className="review-item-stars" aria-label={`5점 만점에 ${review.rating}점`}>{[1, 2, 3, 4, 5].map((rating) => <Star key={rating} size={18} weight={rating <= review.rating ? "fill" : "regular"} />)}</div></header><p>{review.content}</p>{canManage(review) && (deletingId === review.id ? <div className="review-delete-confirm" role="alert"><span>이 리뷰를 삭제할까요?</span><button type="button" disabled={saving} onClick={() => void deleteReview(review)}>삭제</button><button type="button" onClick={() => setDeletingId(null)}>취소</button></div> : <div className="review-item-actions"><button type="button" onClick={() => startEditing(review)}><PencilSimple size={17} /> 수정</button><button type="button" onClick={() => setDeletingId(review.id)}><Trash size={17} /> 삭제</button></div>)}</>}</article>)}
+        </div>
       </div>
     </div>
+
+    {reviewFormOpen && <div className="review-write-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) closeReviewForm(); }}>
+      <div ref={reviewDialogRef} className="review-write-dialog" role="dialog" aria-modal="true" aria-labelledby="review-write-title" aria-describedby="review-write-description">
+        <header className="review-write-dialog-head">
+          <div><span>PRODUCT REVIEW</span><h3 id="review-write-title">리뷰 쓰기</h3><p id="review-write-description">{productName}에 대한 솔직한 경험을 들려주세요.</p></div>
+          <button type="button" aria-label="리뷰 작성 닫기" disabled={saving} onClick={closeReviewForm}><X size={24} /></button>
+        </header>
+        {configured && !authLoading && !user && !offlineMode ? <div className="review-login-prompt" id="review-form"><div><h3>로그인하고 리뷰를 남겨보세요.</h3><p>Google 계정으로 작성하면 다른 사용자에게도 리뷰가 공개됩니다.</p></div><button data-review-initial-focus type="button" onClick={requestLogin}>Google 로그인</button></div> : <form className="review-form" id="review-form" onSubmit={addReview}><div className="review-form-heading"><p>{offlineMode ? "현재 리뷰는 이 브라우저에 저장됩니다." : "작성한 리뷰는 모든 사용자에게 공개됩니다."}</p></div><StarSelector value={draft.rating} onChange={(rating) => setDraft((current) => ({ ...current, rating }))} label="새 리뷰 별점" /><div className="review-form-fields"><label><span>작성자</span><input data-review-initial-focus value={draft.author} maxLength={20} autoComplete="name" onChange={(event) => setDraft((current) => ({ ...current, author: event.target.value }))} /></label><label><span>리뷰 내용</span><textarea value={draft.content} rows={5} maxLength={500} onChange={(event) => setDraft((current) => ({ ...current, content: event.target.value }))} /><small>{draft.content.length}/500</small></label></div>{error && <p className="review-modal-error" role="alert">{error}</p>}<button className="review-submit-button" type="submit" disabled={saving}><Check size={19} weight="bold" /> {saving ? "등록 중" : "리뷰 등록"}</button></form>}
+      </div>
+    </div>}
   </section>;
 }
