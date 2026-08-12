@@ -1,8 +1,8 @@
 "use client";
 
-import { Check, ChatCircleDots, CheckCircle, LockKey, PencilSimple, Trash, X } from "@phosphor-icons/react";
+import { Check, ChatCircleDots, CheckCircle, LockKey, Package, Palette, PencilSimple, Trash, X } from "@phosphor-icons/react";
 import type { User } from "@supabase/supabase-js";
-import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useSupabaseUser } from "@/components/auth/useSupabaseUser";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 
@@ -172,7 +172,6 @@ export function ProductQuestions({ productSlug, productName }: { productSlug: st
     };
   }, [questionFormOpen, saving]);
 
-  const answeredCount = useMemo(() => questions.filter((question) => question.answer).length, [questions]);
   const validate = (value: QuestionDraft) => !value.author.trim()
     ? "작성자 이름을 입력해 주세요."
     : value.title.trim().length < 2
@@ -269,11 +268,15 @@ export function ProductQuestions({ productSlug, productName }: { productSlug: st
       <button ref={questionButtonRef} type="button" onClick={openQuestionForm}>질문 쓰기</button>
     </div>
     <div className="product-questions-layout">
-      <aside className="question-summary" aria-label="상품 Q&A 요약">
-        <ChatCircleDots size={32} weight="duotone" />
-        <span>등록된 질문</span><strong>{questions.length}</strong>
-        <dl><div><dt>답변 완료</dt><dd>{answeredCount}</dd></div><div><dt>답변 대기</dt><dd>{questions.length - answeredCount}</dd></div></dl>
-        <p><LockKey size={18} /> 비공개 질문은 작성자만 확인할 수 있어요.</p>
+      <aside className="question-summary" aria-label="구매 전 확인 안내">
+        <span>BEFORE YOU ASK</span>
+        <h3>구매 전,<br />이것부터 확인해 보세요.</h3>
+        <ul>
+          <li><Palette size={21} weight="duotone" /><div><strong>옵션과 색상</strong><p>현재 선택 가능한 옵션은 상품 상단에서 바로 확인할 수 있어요.</p></div></li>
+          <li><Package size={21} weight="duotone" /><div><strong>배송과 교환</strong><p>평일 오후 2시 이전 주문은 다음 영업일부터 순차 발송됩니다.</p></div></li>
+          <li><LockKey size={21} weight="duotone" /><div><strong>개인적인 문의</strong><p>주문 정보가 포함된다면 비공개 질문으로 안전하게 남겨주세요.</p></div></li>
+        </ul>
+        <button type="button" onClick={openQuestionForm}><ChatCircleDots size={19} weight="bold" /> 해결되지 않았다면 질문하기</button>
       </aside>
       <div className="question-content">
         <div className="question-list-heading"><h3>질문 목록</h3><span>{questions.length}</span></div>
