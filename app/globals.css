@@ -7071,3 +7071,18 @@ body:has(.admin-page) .site-footer {
     transition: none;
   }
 }
+
+/* Subpages reserve breathing room before the shared footer. */
+main:has(
+  .shop-page,
+  .utility-page,
+  .cart-page,
+  .checkout-page,
+  .detail-page,
+  .complete-page,
+  .account-page,
+  .account-dashboard-page,
+  .loading-page
+) {
+  padding-bottom: clamp(80px, 8vw, 150px);
+}
