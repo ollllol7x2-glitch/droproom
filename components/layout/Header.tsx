@@ -30,7 +30,8 @@ const mobileMenuPaths = new Set(["/", "/shop", "/about", "/terms", "/privacy", "
 function normalizeMobilePath(pathname: string | null) {
   if (!pathname) return null;
   const withoutBasePath = pathname.replace(/^\/droproom(?=\/|$)/, "");
-  return withoutBasePath || "/";
+  const withoutTrailingSlash = withoutBasePath.replace(/\/+$/, "");
+  return withoutTrailingSlash || "/";
 }
 
 export function Header() {
@@ -88,7 +89,7 @@ export function Header() {
       router.back();
       return;
     }
-    router.push("/shop");
+    router.push("/");
   };
 
   return (
