@@ -25,6 +25,8 @@ const navItems = [
   ["ABOUT", "/about"],
 ];
 
+const mobileMenuPaths = new Set(["/", "/shop", "/about", "/terms", "/privacy", "/partner", "/admin"]);
+
 export function Header() {
   const router = useRouter();
   const pathname = usePathname();
@@ -33,7 +35,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [theme, setTheme] = useState<"light" | "dark">("light");
-  const isProductDetail = pathname?.startsWith("/product/");
+  const usesMobileBackButton = Boolean(pathname && !mobileMenuPaths.has(pathname));
 
   useEffect(() => {
     const saved = window.localStorage.getItem("drop-room-theme");
@@ -73,7 +75,7 @@ export function Header() {
     setSearchOpen(false);
   };
 
-  const goBackFromProduct = () => {
+  const goBack = () => {
     const cameFromThisSite = document.referrer.startsWith(window.location.origin);
     if (cameFromThisSite) {
       router.back();
@@ -86,12 +88,12 @@ export function Header() {
     <>
       <header className="site-header">
         <div className="shell header-inner">
-          {isProductDetail ? (
+          {usesMobileBackButton ? (
             <button
-              className="icon-button detail-header-back"
+              className="icon-button mobile-back-button"
               type="button"
               aria-label="이전 페이지로"
-              onClick={goBackFromProduct}
+              onClick={goBack}
             >
               <ArrowLeft size={23} weight="regular" />
             </button>

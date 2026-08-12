@@ -299,7 +299,7 @@ img {
   display: none;
 }
 
-.detail-header-back {
+.mobile-back-button {
   display: none;
 }
 
@@ -591,11 +591,11 @@ img {
     display: inline-grid;
   }
 
-  .detail-header-back {
+  .mobile-back-button {
     display: inline-grid;
   }
 
-  .detail-header-back + .brand-home-link {
+  .mobile-back-button + .brand-home-link {
     display: none;
   }
 
