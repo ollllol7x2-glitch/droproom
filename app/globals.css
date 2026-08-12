@@ -2678,9 +2678,9 @@ img {
 .selected-options {
   margin-top: 24px;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--text) 10%, var(--line));
+  border: 1px solid color-mix(in srgb, var(--line) 28%, transparent);
   border-radius: 18px;
-  background: color-mix(in srgb, var(--text) 4%, var(--surface));
+  background: color-mix(in srgb, var(--surface) 12%, var(--bg));
 }
 
 .selected-options-header {
@@ -2689,7 +2689,7 @@ img {
   justify-content: space-between;
   min-height: 52px;
   padding: 0 18px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 32%, transparent);
 }
 
 .selected-options-header strong {
@@ -2715,7 +2715,7 @@ img {
   gap: 14px;
   min-height: 82px;
   padding: 14px 16px 14px 18px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 32%, transparent);
 }
 
 .selected-option-name {
@@ -2811,7 +2811,7 @@ img {
   justify-content: flex-end;
   gap: 14px;
   padding: 18px;
-  background: color-mix(in srgb, var(--text) 7%, var(--surface));
+  background: color-mix(in srgb, var(--surface) 24%, var(--bg));
 }
 
 .selected-options-total span {
