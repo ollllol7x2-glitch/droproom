@@ -49,11 +49,14 @@ export default function AboutPage() {
 
       <section className="about-manifesto" id="our-edit">
         <div className="shell about-manifesto-grid">
-          <div className="about-manifesto-mark"><Sparkle size={32} weight="fill" /></div>
-          <p>좋은 물건은 거창한 설명보다 먼저 손이 갑니다. DROP ROOM은 작은 물건 하나가 책상과 가방, 방의 표정을 바꾸는 순간을 찾습니다.</p>
-          <div className="about-manifesto-note">
-            <span>OUR POINT OF VIEW</span>
-            <p>상품 수보다 발견의 재미를, 스펙보다 고른 이유를 먼저 보여드립니다.</p>
+          <div className="about-manifesto-mark" aria-hidden="true"><Sparkle size={32} weight="fill" /></div>
+          <div className="about-manifesto-copy">
+            <h2>설명보다 먼저,<strong>손이 가는 물건.</strong></h2>
+            <p>책상과 가방, 방의 표정을 바꾸는 작은 물건을 고릅니다.</p>
+          </div>
+          <div className="about-manifesto-question">
+            <span>하나의 질문</span>
+            <strong>매일 쓰고 싶은가?</strong>
           </div>
         </div>
       </section>

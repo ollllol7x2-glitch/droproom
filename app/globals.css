@@ -9173,7 +9173,7 @@ main:has(
 
 .about-manifesto-grid {
   display: grid;
-  grid-template-columns: 0.3fr minmax(0, 1.3fr) 0.58fr;
+  grid-template-columns: 96px minmax(0, 1fr) minmax(220px, 0.36fr);
   align-items: start;
   gap: clamp(24px, 5vw, 76px);
 }
@@ -9188,24 +9188,46 @@ main:has(
   background: #171719;
 }
 
-.about-manifesto-grid > p {
-  max-width: 900px;
+.about-manifesto-copy {
+  min-width: 0;
+}
+
+.about-manifesto-copy h2 {
+  max-width: 860px;
   margin: 0;
   font-size: clamp(40px, 5.2vw, 80px);
   font-weight: 850;
-  line-height: 1.02;
+  line-height: 1.08;
   letter-spacing: -0.06em;
   word-break: keep-all;
 }
 
-.about-manifesto-note {
+.about-manifesto-copy h2 strong {
+  display: table;
+  margin-top: 0.1em;
+  padding: 0.04em 0.13em 0.1em;
+  color: #fff;
+  background: #171719;
+}
+
+.about-manifesto-copy > p {
+  max-width: 520px;
+  margin: 28px 0 0;
+  font-size: 18px;
+  line-height: 1.65;
+  word-break: keep-all;
+}
+
+.about-manifesto-question {
   align-self: end;
-  padding-top: 22px;
+  display: grid;
+  gap: 12px;
+  padding-top: 20px;
   border-top: 2px solid #171719;
 }
 
-.about-manifesto-note span { font-size: 16px; font-weight: 850; letter-spacing: 0.08em; }
-.about-manifesto-note p { margin: 14px 0 0; font-size: 17px; line-height: 1.55; word-break: keep-all; }
+.about-manifesto-question span { font-size: 16px; font-weight: 850; }
+.about-manifesto-question strong { font-size: clamp(22px, 2.2vw, 30px); line-height: 1.25; word-break: keep-all; }
 .about-principles, .about-brands { padding-block: clamp(96px, 11vw, 170px); }
 .about-section-heading { display: grid; max-width: 760px; gap: 18px; }
 
@@ -9274,7 +9296,7 @@ main:has(
   .about-hero-copy { padding-block: 42px 24px; }
   .about-hero-visual { min-height: min(690px, 82vw); }
   .about-manifesto-grid { grid-template-columns: auto 1fr; }
-  .about-manifesto-note { grid-column: 2; max-width: 440px; }
+  .about-manifesto-question { grid-column: 2; max-width: 440px; }
   .about-drop-image { min-height: min(720px, 86vw); }
 }
 
@@ -9286,7 +9308,8 @@ main:has(
   .about-hero-image { right: -4%; width: 88%; }
   .about-hero-symbol { width: 35%; }
   .about-manifesto-grid { grid-template-columns: 1fr; }
-  .about-manifesto-note { grid-column: 1; }
+  .about-manifesto-question { grid-column: 1; }
+  .about-manifesto-copy > p { margin-top: 22px; }
   .about-principle-list { grid-template-columns: 1fr; margin-top: 48px; }
   .about-principle-list article, .about-principle-list article:nth-child(2) { min-height: 310px; margin-top: 0; }
   .about-drop-image { min-height: 112vw; }
