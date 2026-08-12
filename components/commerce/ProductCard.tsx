@@ -63,7 +63,7 @@ export function ProductCard({ product }: { product: Product }) {
             <strong>{formatPrice(price)}</strong>
           </div>
           <button className="product-cart-button" type="button" onClick={add} aria-label={`${product.name} 장바구니 담기`}>
-            <span className="added-label" aria-live="polite">{added ? "담았어요" : "장바구니"}</span>
+            <span className="added-label">{added ? "담았어요" : "장바구니"}</span>
           </button>
         </div>
       </div>
