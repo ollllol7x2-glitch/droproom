@@ -153,7 +153,6 @@ export function ProductQuestions({ productSlug, productName }: { productSlug: st
     if (loadError) {
       setQuestions([...readLocalQuestions(productSlug), ...demoQuestions(productSlug, productName)]);
       setOfflineMode(true);
-      setError("공용 Q&A를 불러오지 못해 이 브라우저에 저장된 질문을 표시합니다.");
     } else {
       setQuestions([...(data as QuestionRow[]).map(mapRow), ...demoQuestions(productSlug, productName)]);
       setOfflineMode(false);
@@ -315,7 +314,7 @@ export function ProductQuestions({ productSlug, productName }: { productSlug: st
       </aside>
       <div className="question-content">
         <div className="question-list-heading"><h3>질문 목록</h3><span>{questions.length}</span></div>
-        <div className="question-feedback" aria-live="polite">{error && <p className="question-error" role="alert">{error}</p>}{message && <p>{message}</p>}</div>
+        <div className="question-feedback" aria-live="polite">{message && <p>{message}</p>}</div>
         <div className="question-list" aria-busy={!ready}>
           {!ready && <div className="question-empty"><p>질문을 불러오고 있습니다.</p></div>}
           {ready && !questions.length && <div className="question-empty"><ChatCircleDots size={34} /><h3>아직 등록된 질문이 없어요.</h3><p>옵션, 배송, 사용 방법처럼 궁금한 점을 먼저 물어보세요.</p></div>}

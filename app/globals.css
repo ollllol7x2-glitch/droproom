@@ -4077,10 +4077,6 @@ img {
   font-weight: 700;
 }
 
-.question-feedback .question-error {
-  color: #b42318;
-}
-
 .question-list {
   border-top: 1px solid var(--line);
 }
