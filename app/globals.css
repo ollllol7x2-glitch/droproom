@@ -378,7 +378,7 @@ img {
   border-radius: 999px;
   color: var(--accent-ink);
   background: var(--accent);
-  line-height: 0;
+  line-height: 1;
   cursor: pointer;
 }
 
@@ -674,7 +674,7 @@ img {
   max-width: 620px;
   font-size: clamp(46px, 4.7vw, 76px);
   font-weight: 850;
-  line-height: 0.94;
+  line-height: 1.08;
   letter-spacing: -0.07em;
 }
 
@@ -1502,7 +1502,7 @@ img {
   margin: 0;
   font-size: clamp(48px, 5.2vw, 76px);
   font-weight: 780;
-  line-height: 0.98;
+  line-height: 1.08;
   letter-spacing: -0.065em;
   word-break: keep-all;
 }
@@ -1638,7 +1638,7 @@ img {
   margin: 0;
   font-size: clamp(52px, 7vw, 104px);
   font-weight: 820;
-  line-height: 0.83;
+  line-height: 1.05;
   letter-spacing: -0.075em;
 }
 
@@ -2342,7 +2342,7 @@ img {
   margin: 0;
   font-size: clamp(48px, 7vw, 104px);
   font-weight: 780;
-  line-height: 0.92;
+  line-height: 1.08;
   letter-spacing: -0.07em;
   word-break: keep-all;
 }
@@ -2867,7 +2867,7 @@ img {
 .product-introduction-heading h2 {
   margin: 0;
   font-size: clamp(45px, 6vw, 82px);
-  line-height: 0.98;
+  line-height: 1.08;
   letter-spacing: -0.065em;
   word-break: keep-all;
 }
@@ -5438,7 +5438,7 @@ img {
 .weekly-copy h2 {
   font-family: "Arial Rounded MT Bold", "Trebuchet MS", "Pretendard", sans-serif;
   font-size: clamp(62px, 7.4vw, 110px);
-  line-height: 0.76;
+  line-height: 1.05;
   letter-spacing: -0.09em;
 }
 
@@ -6274,7 +6274,7 @@ body {
 .product-hero-copy h1 {
   max-width: 520px;
   font-size: clamp(38px, 4.1vw, 58px);
-  line-height: 0.98;
+  line-height: 1.08;
   word-break: keep-all;
 }
 
@@ -7611,7 +7611,7 @@ body:has(.admin-page) .site-footer {
 .account-dashboard-heading h1 {
   margin: 0;
   font-size: clamp(48px, 6vw, 80px);
-  line-height: 0.98;
+  line-height: 1.08;
   letter-spacing: -0.065em;
 }
 
@@ -9074,7 +9074,7 @@ main:has(
 .about-hero-copy h1 {
   margin: 0;
   font-size: clamp(58px, 6.5vw, 104px);
-  line-height: 0.92;
+  line-height: 1.08;
   letter-spacing: -0.075em;
   word-break: keep-all;
 }
@@ -9162,7 +9162,7 @@ main:has(
   color: #fff;
   font-size: clamp(38px, 5vw, 78px);
   font-weight: 900;
-  line-height: 0.82;
+  line-height: 1.08;
   letter-spacing: -0.07em;
 }
 
@@ -9264,7 +9264,7 @@ main:has(
 .about-brand-directory span { min-width: 0; padding: 17px 8px; border-bottom: 1px solid #c9c9ce; font-size: clamp(18px, 2vw, 28px); font-weight: 820; letter-spacing: -0.025em; }
 .about-final { padding-block: clamp(100px, 12vw, 180px); background: #3157d5; }
 .about-final-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; }
-.about-final p { margin: 0; color: #fff; font-size: clamp(55px, 8vw, 120px); font-weight: 900; line-height: 0.9; letter-spacing: -0.075em; }
+.about-final p { margin: 0; color: #fff; font-size: clamp(55px, 8vw, 120px); font-weight: 900; line-height: 1.05; letter-spacing: -0.075em; }
 .about-final a { flex: 0 0 auto; border-color: #d8ef35; color: #171719; background: #d8ef35; }
 [data-theme="dark"] .about-page { color: #171719; background: #fff; }
 
@@ -9281,7 +9281,7 @@ main:has(
 @media (max-width: 700px) {
   .about-hero { padding-bottom: 80px; }
   .about-hero-copy > p { margin-bottom: 18px; }
-  .about-hero-copy h1 { font-size: clamp(48px, 14vw, 70px); line-height: 0.96; }
+  .about-hero-copy h1 { font-size: clamp(48px, 14vw, 70px); line-height: 1.08; }
   .about-hero-visual { min-height: 112vw; }
   .about-hero-image { right: -4%; width: 88%; }
   .about-hero-symbol { width: 35%; }
