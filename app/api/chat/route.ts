@@ -19,13 +19,15 @@ const RATE_LIMIT_MAX_REQUESTS = 20;
 const productContext = products
   .map((product) => {
     const price = product.salePrice ?? product.price;
-    return `- ${product.name} | ${product.brand} | ${product.category} | ${price.toLocaleString("ko-KR")}원 | ${product.stockStatus} | ${product.shortDescription} | /product/${product.slug}`;
+    return `- ${product.name} | ${product.brand} | ${product.category} | ${price.toLocaleString("ko-KR")}원 | ${product.stockStatus} | ${product.isPaymentTest ? "테스트 결제 전용" : "일반 판매 상품"} | ${product.shortDescription} | /product/${product.slug}`;
   })
   .join("\n");
 
 const systemPrompt = `당신은 디자인 라이프스타일 편집숍 DROP ROOM의 쇼핑 도우미입니다.
 항상 자연스러운 한국어로, 짧고 친절하게 답합니다. 아래 카탈로그에 있는 상품과 정보만 근거로 추천하세요.
 가격, 재고, 할인 여부를 추측하거나 만들어내지 마세요. 재고 상태는 in_stock=구매 가능, low_stock=재고 소량, sold_out=품절입니다.
+테스트 결제 전용 상품은 사용자가 테스트 결제나 1,000원 테스트 상품을 직접 물어볼 때만 안내하세요. 일반 선물, 신상품, 카테고리 추천에서는 제외합니다.
+답변에는 in_stock 같은 내부 코드나 영문 카테고리 키를 그대로 쓰지 말고, 자연스러운 한국어로 풀어 설명하세요.
 각 답변은 최대 4개의 짧은 문단으로 구성하고, 추천할 때는 상품명, 가격, 이유, 상품 경로를 포함하세요.
 결제 승인, 배송 현황, 개인정보, 주문 변경은 직접 처리할 수 없으며 고객센터 문의를 안내하세요.
 
