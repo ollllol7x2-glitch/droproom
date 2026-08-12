@@ -1,61 +1,27 @@
 "use client";
 
-import { LockKey, MagnifyingGlass } from "@phosphor-icons/react";
+import { LockKey } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Script from "next/script";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { useSupabaseUser } from "@/components/auth/useSupabaseUser";
+import { KakaoAddressFields } from "@/components/commerce/KakaoAddressFields";
 import { useStore } from "@/components/commerce/StoreProvider";
 import { getProductsByIds } from "@/data/products";
 import { assetPath } from "@/lib/assets";
 import { formatPrice } from "@/lib/format";
 
-type KakaoPostcodeData = {
-  zonecode: string;
-  userSelectedType: "R" | "J";
-  roadAddress: string;
-  jibunAddress: string;
-  bname: string;
-  buildingName: string;
-  apartment: "Y" | "N";
-};
-
-type KakaoPostcodeInstance = {
-  open: () => void;
-};
-
-declare global {
-  interface Window {
-    kakao?: {
-      Postcode: new (options: {
-        oncomplete: (data: KakaoPostcodeData) => void;
-      }) => KakaoPostcodeInstance;
-    };
-  }
-}
-
-const POSTCODE_SCRIPT_URL = "https://t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
-
-function formatSelectedAddress(data: KakaoPostcodeData) {
-  const selectedAddress = data.userSelectedType === "R" ? data.roadAddress : data.jibunAddress;
-
-  if (data.userSelectedType !== "R") return selectedAddress;
-
-  const extras: string[] = [];
-  if (data.bname && /[동로가]$/.test(data.bname)) extras.push(data.bname);
-  if (data.buildingName && data.apartment === "Y") extras.push(data.buildingName);
-
-  return extras.length > 0 ? `${selectedAddress} (${extras.join(", ")})` : selectedAddress;
-}
-
 export function CheckoutClient() {
   const router = useRouter();
   const { cart, clearCart } = useStore();
-  const [postcodeReady, setPostcodeReady] = useState(false);
-  const [postcodeError, setPostcodeError] = useState(false);
+  const { user } = useSupabaseUser();
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   const [postcode, setPostcode] = useState("");
   const [address, setAddress] = useState("");
+  const [addressDetail, setAddressDetail] = useState("");
   const addressDetailRef = useRef<HTMLInputElement>(null);
   const productMap = new Map(
     getProductsByIds(cart.map((line) => line.productId)).map((product) => [product.id, product]),
@@ -70,17 +36,27 @@ export function CheckoutClient() {
   );
   const shipping = subtotal >= 50000 ? 0 : 3000;
 
-  const openPostcodeSearch = () => {
-    if (!postcodeReady || !window.kakao?.Postcode) return;
+  useEffect(() => {
+    if (!user) return;
 
-    new window.kakao.Postcode({
-      oncomplete: (data) => {
-        setPostcode(data.zonecode);
-        setAddress(formatSelectedAddress(data));
-        requestAnimationFrame(() => addressDetailRef.current?.focus());
-      },
-    }).open();
-  };
+    const profile = user.user_metadata.droproom_profile;
+    if (profile && typeof profile === "object" && !Array.isArray(profile)) {
+      setCustomerName(typeof profile.name === "string" ? profile.name : "");
+      setCustomerPhone(typeof profile.phone === "string" ? profile.phone : "");
+    } else {
+      setCustomerName(String(user.user_metadata.full_name || user.user_metadata.name || ""));
+    }
+    setCustomerEmail(user.email || "");
+
+    const savedAddresses = user.user_metadata.droproom_addresses;
+    if (!Array.isArray(savedAddresses)) return;
+    const savedAddress = savedAddresses.find((item) => item?.isDefault === true) ?? savedAddresses[0];
+    if (!savedAddress || typeof savedAddress !== "object") return;
+
+    setPostcode(typeof savedAddress.postcode === "string" ? savedAddress.postcode : "");
+    setAddress(typeof savedAddress.address === "string" ? savedAddress.address : "");
+    setAddressDetail(typeof savedAddress.detail === "string" ? savedAddress.detail : "");
+  }, [user]);
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -103,23 +79,6 @@ export function CheckoutClient() {
 
   return (
     <>
-      <Script
-        src={POSTCODE_SCRIPT_URL}
-        strategy="afterInteractive"
-        onLoad={() => {
-          setPostcodeReady(Boolean(window.kakao?.Postcode));
-          setPostcodeError(false);
-        }}
-        onReady={() => {
-          setPostcodeReady(Boolean(window.kakao?.Postcode));
-          setPostcodeError(false);
-        }}
-        onError={() => {
-          setPostcodeReady(false);
-          setPostcodeError(true);
-        }}
-      />
-
       <div className="shell checkout-page">
         <header>
           <p>CHECKOUT</p>
@@ -132,61 +91,23 @@ export function CheckoutClient() {
             <section>
               <h2>주문자 정보</h2>
               <div className="form-grid">
-                <label><span>이름</span><input name="name" required autoComplete="name" /></label>
-                <label><span>휴대폰 번호</span><input name="tel" required autoComplete="tel" inputMode="tel" placeholder="010-0000-0000" /></label>
-                <label className="full"><span>이메일</span><input name="email" type="email" required autoComplete="email" placeholder="email@example.com" /></label>
+                <label><span>이름</span><input name="name" required autoComplete="name" value={customerName} onChange={(event) => setCustomerName(event.target.value)} /></label>
+                <label><span>휴대폰 번호</span><input name="tel" required autoComplete="tel" inputMode="tel" placeholder="010-0000-0000" value={customerPhone} onChange={(event) => setCustomerPhone(event.target.value)} /></label>
+                <label className="full"><span>이메일</span><input name="email" type="email" required autoComplete="email" placeholder="email@example.com" value={customerEmail} onChange={(event) => setCustomerEmail(event.target.value)} /></label>
               </div>
             </section>
 
             <section>
               <h2>배송지</h2>
               <div className="form-grid">
-                <div className="address-postcode-field">
-                  <label htmlFor="postcode"><span>우편번호</span></label>
-                  <div className="address-search-row">
-                    <input
-                      id="postcode"
-                      name="postcode"
-                      required
-                      inputMode="numeric"
-                      autoComplete="postal-code"
-                      placeholder="우편번호"
-                      value={postcode}
-                      readOnly={!postcodeError}
-                      onChange={(event) => setPostcode(event.target.value)}
-                    />
-                    <button
-                      type="button"
-                      onClick={openPostcodeSearch}
-                      disabled={!postcodeReady}
-                    >
-                      <MagnifyingGlass size={19} weight="bold" />
-                      우편번호 검색
-                    </button>
-                  </div>
-                  <small className={postcodeError ? "address-search-status error" : "address-search-status"}>
-                    {postcodeError
-                      ? "주소 검색을 불러오지 못했습니다. 우편번호와 주소를 직접 입력해 주세요."
-                      : postcodeReady
-                        ? "도로명, 건물명 또는 지번으로 검색할 수 있어요."
-                        : "카카오 주소 검색을 불러오는 중입니다."}
-                  </small>
-                </div>
-
-                <label className="full" htmlFor="address">
-                  <span>기본 주소</span>
-                  <input
-                    id="address"
-                    name="address"
-                    required
-                    autoComplete="address-line1"
-                    placeholder="우편번호 검색으로 주소를 선택해 주세요"
-                    value={address}
-                    readOnly={!postcodeError}
-                    onChange={(event) => setAddress(event.target.value)}
-                    onClick={postcodeReady && !address ? openPostcodeSearch : undefined}
-                  />
-                </label>
+                <KakaoAddressFields
+                  idPrefix="checkout"
+                  postcode={postcode}
+                  address={address}
+                  onPostcodeChange={setPostcode}
+                  onAddressChange={setAddress}
+                  detailInputRef={addressDetailRef}
+                />
                 <label className="full" htmlFor="address-detail">
                   <span>상세 주소</span>
                   <input
@@ -196,6 +117,8 @@ export function CheckoutClient() {
                     required
                     autoComplete="address-line2"
                     placeholder="동·호수 등 상세 주소"
+                    value={addressDetail}
+                    onChange={(event) => setAddressDetail(event.target.value)}
                   />
                 </label>
                 <label className="full">
