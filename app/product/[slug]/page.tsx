@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductGrid } from "@/components/commerce/ProductGrid";
 import { ProductPurchase } from "@/components/commerce/ProductPurchase";
+import { ProductQuestions } from "@/components/commerce/ProductQuestions";
 import { ProductReviews } from "@/components/commerce/ProductReviews";
 import { categories, getProduct, products, type CategoryKey } from "@/data/products";
 import { assetPath } from "@/lib/assets";
@@ -71,6 +72,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <div className="shell product-detail-tabs-inner">
           <a href="#product-introduction">상품 소개</a>
           <a href="#product-reviews">리뷰</a>
+          <a href="#product-questions">Q&amp;A</a>
           <a href="#related-products">관련 상품</a>
         </div>
       </nav>
@@ -108,6 +110,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
       <ProductReviews productSlug={product.slug} productName={product.name} />
+      <ProductQuestions productSlug={product.slug} productName={product.name} />
       <section className="shell related-section" id="related-products" aria-labelledby="related-products-title">
         <div className="product-section-head">
           <div>
