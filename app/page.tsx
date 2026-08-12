@@ -9,7 +9,7 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import Link from "next/link";
-import { ProductGrid } from "@/components/commerce/ProductGrid";
+import { ProductRail } from "@/components/commerce/ProductRail";
 import { GiftFinder } from "@/components/home/GiftFinder";
 import { Hero } from "@/components/home/Hero";
 import { ReadySet } from "@/components/home/ReadySet";
@@ -104,7 +104,7 @@ export default function Home() {
           <div><h2>이번 주 신상품</h2><p>서로 다른 촬영과 색감으로 상품을 더 정확하게 보여드립니다.</p></div>
           <Link className="text-link" href="/shop?sort=new">신상품 전체 <ArrowRight size={17} /></Link>
         </div>
-        <div className="shell"><ProductGrid items={newItems} /></div>
+        <ProductRail items={newItems} />
       </section>
 
       <GiftFinder />
