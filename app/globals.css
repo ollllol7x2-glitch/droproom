@@ -2771,7 +2771,7 @@ img {
   word-break: keep-all;
 }
 
-+.product-reviews {
+.product-reviews {
   padding-top: clamp(100px, 12vw, 180px);
 }
 
@@ -2899,6 +2899,42 @@ img {
   padding: clamp(26px, 4vw, 42px);
   border-radius: var(--radius-card);
   background: var(--surface);
+}
+
+.review-login-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: clamp(26px, 4vw, 42px);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.review-login-prompt h3 {
+  margin: 0;
+  font-size: clamp(27px, 3vw, 38px);
+  letter-spacing: -0.045em;
+}
+
+.review-login-prompt p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.review-login-prompt button {
+  flex: 0 0 auto;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: #171719;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .review-form-heading h3 {
@@ -3031,6 +3067,7 @@ img {
 }
 
 .review-submit-button:active,
+.review-login-prompt button:active,
 .review-edit-form > div > button:active,
 .review-item-actions button:active,
 .review-delete-confirm button:active {
@@ -3220,6 +3257,16 @@ img {
 
   .review-form {
     padding: 24px 18px;
+  }
+
+  .review-login-prompt {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 24px 18px;
+  }
+
+  .review-login-prompt button {
+    width: 100%;
   }
 
   .review-star-selector strong {
