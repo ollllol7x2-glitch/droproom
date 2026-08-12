@@ -9252,7 +9252,7 @@ main:has(
 
 .about-principle-list {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(18px, 3vw, 46px);
   margin-top: 70px;
 }
@@ -9264,7 +9264,6 @@ main:has(
   border-top: 3px solid #171719;
 }
 
-.about-principle-list article:nth-child(2) { margin-top: 72px; }
 .about-principle-list article > span { position: absolute; top: 28px; right: 0; font-size: 16px; font-weight: 800; }
 .about-principle-list article > svg { color: #3157d5; }
 .about-principle-list h3 { max-width: 320px; margin: 86px 0 0; font-size: clamp(31px, 3vw, 47px); line-height: 1; letter-spacing: -0.055em; }
@@ -9311,7 +9310,7 @@ main:has(
   .about-manifesto-question { grid-column: 1; }
   .about-manifesto-copy > p { margin-top: 22px; }
   .about-principle-list { grid-template-columns: 1fr; margin-top: 48px; }
-  .about-principle-list article, .about-principle-list article:nth-child(2) { min-height: 310px; margin-top: 0; }
+  .about-principle-list article { min-height: 310px; }
   .about-drop-image { min-height: 112vw; }
   .about-brand-directory { grid-template-columns: 1fr; }
   .about-final-inner { align-items: flex-start; flex-direction: column; }
