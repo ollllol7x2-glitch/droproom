@@ -28,9 +28,12 @@ export function ShopAssistant() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
+  const latestQuestionRef = useRef<HTMLParagraphElement>(null);
   const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const latestQuestionIndex = messages.findLastIndex((message) => message.role === "user");
 
   useEffect(() => {
     if (!open) return;
@@ -44,6 +47,25 @@ export function ShopAssistant() {
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  useEffect(() => {
+    if (!open || messages.length === 1) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      const messageList = messagesRef.current;
+      const latestQuestion = latestQuestionRef.current;
+      if (!messageList || !latestQuestion) return;
+
+      const listTop = messageList.getBoundingClientRect().top;
+      const questionTop = latestQuestion.getBoundingClientRect().top;
+      messageList.scrollTo({
+        top: Math.max(0, messageList.scrollTop + questionTop - listTop - 8),
+        behavior: "smooth",
+      });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [messages, open]);
 
   const send = async (event?: FormEvent<HTMLFormElement>, question?: string) => {
     event?.preventDefault();
@@ -117,9 +139,13 @@ export function ShopAssistant() {
             ))}
           </div>
 
-          <div className="shop-assistant-messages" aria-live="polite">
+          <div ref={messagesRef} className="shop-assistant-messages" aria-live="polite">
             {messages.map((message, index) => (
-              <p className={`shop-assistant-message ${message.role}`} key={`${message.role}-${index}`}>
+              <p
+                ref={index === latestQuestionIndex ? latestQuestionRef : undefined}
+                className={`shop-assistant-message ${message.role}`}
+                key={`${message.role}-${index}`}
+              >
                 {message.content}
               </p>
             ))}

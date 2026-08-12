@@ -7208,6 +7208,8 @@ main:has(
   min-height: 116px;
   max-height: 270px;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-padding-block: 8px;
   padding: 16px 20px;
 }
 
