@@ -1,7 +1,7 @@
 "use client";
 
-import { ChatCircleDots, PaperPlaneTilt, Sparkle, X } from "@phosphor-icons/react";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { ArrowRight, ChatCircleDots, PaperPlaneTilt, Sparkle, X } from "@phosphor-icons/react";
+import { FormEvent, type ReactNode, useEffect, useRef, useState } from "react";
 import { assetPath } from "@/lib/assets";
 
 type Provider = "groq" | "gemini" | "openai";
@@ -19,6 +19,37 @@ const initialMessage: Message = {
   role: "assistant",
   content: "안녕하세요. 예산, 받는 사람, 원하는 카테고리를 알려주시면 DROP ROOM 상품을 골라드릴게요.",
 };
+
+const productPathPattern = /\/(?:droproom\/)?product\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?/gi;
+
+function renderMessageContent(content: string) {
+  const matches = [...content.matchAll(productPathPattern)];
+  if (matches.length === 0) return content;
+
+  const parts: ReactNode[] = [];
+  let cursor = 0;
+
+  matches.forEach((match, index) => {
+    const matchIndex = match.index ?? 0;
+    const text = content.slice(cursor, matchIndex);
+    if (text) parts.push(<span key={`text-${index}`}>{text}</span>);
+
+    parts.push(
+      <a
+        className="shop-assistant-product-link"
+        href={assetPath(`/product/${match[1].toLowerCase()}`)}
+        key={`product-${matchIndex}`}
+      >
+        상품 보기 <ArrowRight size={15} weight="bold" />
+      </a>,
+    );
+    cursor = matchIndex + match[0].length;
+  });
+
+  const remainder = content.slice(cursor);
+  if (remainder) parts.push(<span key="text-final">{remainder}</span>);
+  return parts;
+}
 
 export function ShopAssistant() {
   const [open, setOpen] = useState(false);
@@ -146,7 +177,7 @@ export function ShopAssistant() {
                 className={`shop-assistant-message ${message.role}`}
                 key={`${message.role}-${index}`}
               >
-                {message.content}
+                {renderMessageContent(message.content)}
               </p>
             ))}
             {pending && <p className="shop-assistant-message assistant loading">상품을 살펴보고 있어요.</p>}

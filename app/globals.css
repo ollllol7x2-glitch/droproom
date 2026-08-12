@@ -7238,6 +7238,32 @@ main:has(
   color: var(--muted);
 }
 
+.shop-assistant-product-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 34px;
+  margin: 5px 2px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: #3157d5;
+  color: #fff;
+  font-size: inherit;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.shop-assistant-product-link:hover {
+  background: #171719;
+}
+
+.shop-assistant-product-link:focus-visible {
+  outline: 3px solid #d8ef35;
+  outline-offset: 2px;
+}
+
 .shop-assistant-quick {
   display: flex;
   flex-wrap: wrap;
